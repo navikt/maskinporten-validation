@@ -1,6 +1,7 @@
 package no.nav.pensjonsamhandling.maskinporten.validation
 
 import com.nimbusds.jose.JWSAlgorithm.RS256
+import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.jwk.source.RemoteJWKSet
 import com.nimbusds.jose.proc.JWSVerificationKeySelector
 import com.nimbusds.jose.proc.SecurityContext
@@ -11,21 +12,22 @@ import com.nimbusds.jwt.proc.BadJWTException
 import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier
 import com.nimbusds.jwt.proc.DefaultJWTProcessor
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.OrganizationValidator
+import java.text.ParseException
 
-class MaskinportenValidator(
+open class MaskinportenValidator(
     private val config: MaskinportenValidatorConfig
 ) {
+
     private val jwtProcessor = DefaultJWTProcessor<SecurityContext>().apply {
-        jwsKeySelector =
-            JWSVerificationKeySelector(
-                RS256,
-                RemoteJWKSet(config.jwksUrl, DefaultResourceRetriever().apply {
-                    proxy = config.proxy
-                })
-            )
+        jwsKeySelector = JWSVerificationKeySelector(
+            RS256,
+            config.jwkSet
+        )
         jwtClaimsSetVerifier = DefaultJWTClaimsVerifier(
             JWTClaimsSet.Builder()
-                .issuer(config.baseURL.host)
+                .issuer(config.baseURL.toExternalForm().run {
+                    if (last() != '/') "$this/" else this
+                })
                 .build(),
             setOf("client_id", "client_amr", ORGNO_CLAIM, "consumer", "exp", "iat", "jti")
         )
@@ -36,7 +38,13 @@ class MaskinportenValidator(
      */
     operator fun invoke(token: JWT, requiredScope: String) =
         jwtProcessor.process(token, null)
-            .takeIf { requiredScope in it.getStringListClaim(SCOPE_CLAIM) }
+            .takeIf {
+                try {
+                    requiredScope == it.getStringClaim(SCOPE_CLAIM)
+                } catch (_: ParseException) {
+                    requiredScope in it.getStringArrayClaim(SCOPE_CLAIM)
+                }
+            }
             ?.getStringClaim(ORGNO_CLAIM)
             ?: throw BadJWTException("Token missing required scope.")
 
