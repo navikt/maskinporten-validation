@@ -10,6 +10,7 @@ dependencies {
     implementation(project(":maskinporten-validation-core"))
     implementation("org.springframework", "spring-webmvc", "5.3.3")
     implementation("javax.servlet","javax.servlet-api","4.0.1")
+    testImplementation("org.junit.jupiter", "junit-jupiter", "5.7.0")
 }
 tasks {
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
