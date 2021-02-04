@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 plugins {
     kotlin("jvm")
     kotlin("kapt")
@@ -29,9 +32,15 @@ kapt {
 }
 
 tasks {
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "15"
         dependsOn(processResources)
+    }
+    withType<BootJar> {
+        enabled = false
+    }
+    withType<Jar> {
+        enabled = true
     }
     test {
         useJUnitPlatform()
