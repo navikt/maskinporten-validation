@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.HandlerInterceptor
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -31,21 +32,17 @@ class MaskinportenValidatorHandlerInterceptor(
         val validatorType = annotation.orgValidator
         val validator = validators.firstOrNull { it::class == validatorType }
             ?: throw BeanExpressionException("No bean of type $validatorType exists. Did you remember to annotate the class as a @Component?")
-        val jwt = try {
-            request.getHeader("authorization")
-                ?.run { if (startsWith("Bearer ")) removePrefix("Bearer ") else null }
+        try {
+            val jwt = request.getHeader("authorization")
+                ?.substringAfter("Bearer ", "")
                 .let { JWTParser.parse(it)!! }
+            if (!maskinportenValidator(jwt, requiredScope, validator, request))
+                throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         } catch (e: Exception) {
             LOG.debug("Failed to validate token.", e)
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
-        return if (maskinportenValidator(
-                jwt,
-                requiredScope,
-                validator,
-                request
-            )
-        ) true else throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+        return true
     }
 
     companion object {

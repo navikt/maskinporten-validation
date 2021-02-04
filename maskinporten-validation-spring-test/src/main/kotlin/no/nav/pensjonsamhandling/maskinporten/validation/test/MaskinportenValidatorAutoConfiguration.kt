@@ -4,16 +4,11 @@ import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorHandlerInterceptor
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorInterceptorHandler
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganizationValidator
-import org.springframework.boot.autoconfigure.AutoConfigureAfter
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 
-@Configuration(proxyBeanMethods = false)
-@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@AutoConfigureAfter(AutoconfigureMaskinportenValidator::class)
+@Configuration
 class MaskinportenValidatorAutoConfiguration {
     @Bean
     fun noopOrganizationValidator() = RequestAwareOrganizationValidator.NoopOrganizationValidator()
@@ -27,7 +22,7 @@ class MaskinportenValidatorAutoConfiguration {
     fun testValidator() = MaskinportenValidatorTestBuilder()
 
     @Bean
-    @ConditionalOnMissingBean(MaskinportenValidatorHandlerInterceptor::class)
+    @Primary
     fun maskinportenHandlerInterceptor(
         maskinportenValidator: MaskinportenValidator,
         validators: List<RequestAwareOrganizationValidator>
@@ -38,7 +33,7 @@ class MaskinportenValidatorAutoConfiguration {
         )
 
     @Bean
-    @ConditionalOnMissingBean(MaskinportenValidatorInterceptorHandler::class)
+    @Primary
     fun maskinportenValidatorInterceptorHandler(maskinportenValidatorHandlerInterceptor: MaskinportenValidatorHandlerInterceptor) =
         MaskinportenValidatorInterceptorHandler(maskinportenValidatorHandlerInterceptor)
 }

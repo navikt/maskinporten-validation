@@ -17,7 +17,7 @@ import java.net.URL
 import java.util.*
 
 class MaskinportenValidatorTestBuilder(
-    private val keyId: String = "keyId"
+    keyId: String = "keyId"
 ) {
 
     private val jwk: RSAKey = RSAKeyGenerator(2048).keyID(keyId).generate()
@@ -44,11 +44,11 @@ class MaskinportenValidatorTestBuilder(
         .issuer(config.baseURL.toString())
         .issueTime(Date())
         .expirationTime(Date(System.currentTimeMillis() + 300000L))
-        .jwtID(null)
+        .jwtID("jti")
         .claim(SCOPE_CLAIM, listOf(scope))
-        .claim("client_id", null)
-        .claim("client_amr", null)
-        .claim("consumer", null)
+        .claim("client_id", clientId)
+        .claim("client_amr", clientAmr)
+        .claim("consumer", consumer)
         .claim(ORGNO_CLAIM, orgno)
         .build()
 

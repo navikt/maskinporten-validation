@@ -30,7 +30,7 @@ class MaskinportenValidatorConfigurer(
     @Bean
     fun maskinportenHandlerInterceptor(
         maskinportenValidator: MaskinportenValidator,
-        validators: List<RequestAwareOrganizationValidator>
+        validators: List<RequestAwareOrganizationValidator>,
     ): MaskinportenValidatorHandlerInterceptor =
         MaskinportenValidatorHandlerInterceptor(
             maskinportenValidator,
