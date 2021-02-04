@@ -9,11 +9,11 @@ import com.nimbusds.jose.jwk.gen.RSAKeyGenerator
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
-import no.nav.pensjonsamhandling.maskinporten.validation.DenyingOrganizationValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
-import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfigurer
 import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfig
-import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenHandlerInterceptorTest.TestConfig
+import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfigurer
+import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorHandlerInterceptorTest.TestConfig
+import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganizationValidator.DenyingOrganizationValidator
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -28,7 +28,7 @@ import java.util.*
 
 @WebMvcTest(TestController::class)
 @ContextConfiguration(classes = [TestConfig::class, TestController::class, MaskinportenValidatorConfigurer::class])
-internal class MaskinportenHandlerInterceptorTest {
+internal class MaskinportenValidatorHandlerInterceptorTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc

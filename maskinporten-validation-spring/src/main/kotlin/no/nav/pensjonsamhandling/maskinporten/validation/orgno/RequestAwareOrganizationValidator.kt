@@ -6,4 +6,7 @@ interface RequestAwareOrganizationValidator : OrganizationValidator<HttpServletR
     class NoopOrganizationValidator : RequestAwareOrganizationValidator {
         override fun invoke(orgno: String, o: HttpServletRequest) = true
     }
+    class DenyingOrganizationValidator : RequestAwareOrganizationValidator {
+        override fun invoke(orgno: String, o: HttpServletRequest) = false
+    }
 }

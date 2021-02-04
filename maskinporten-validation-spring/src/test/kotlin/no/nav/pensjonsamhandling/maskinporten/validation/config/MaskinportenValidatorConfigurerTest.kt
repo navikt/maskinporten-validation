@@ -1,7 +1,7 @@
 package no.nav.pensjonsamhandling.maskinporten.validation.config
 
-import no.nav.pensjonsamhandling.maskinporten.validation.DenyingOrganizationValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganizationValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganizationValidator.DenyingOrganizationValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganizationValidator.NoopOrganizationValidator
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

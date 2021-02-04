@@ -14,7 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class MaskinportenHandlerInterceptor(
+class MaskinportenValidatorHandlerInterceptor(
     private val maskinportenValidator: MaskinportenValidator,
     private val validators: List<RequestAwareOrganizationValidator>
 ) : HandlerInterceptor {
@@ -49,6 +49,6 @@ class MaskinportenHandlerInterceptor(
     }
 
     companion object {
-        val LOG: Logger = LoggerFactory.getLogger(MaskinportenHandlerInterceptor::class.java)
+        val LOG: Logger = LoggerFactory.getLogger(MaskinportenValidatorHandlerInterceptor::class.java)
     }
 }

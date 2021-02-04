@@ -1,33 +1,33 @@
-package no.nav.pensjonsamhandling.maskinporten.validation.config
+package no.nav.pensjonsamhandling.maskinporten.validation.test
 
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorHandlerInterceptor
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorInterceptorHandler
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganizationValidator
-import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganizationValidator.NoopOrganizationValidator
-import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.boot.autoconfigure.AutoConfigureAfter
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.servlet.config.annotation.EnableWebMvc
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import org.springframework.context.annotation.Primary
 
-@EnableWebMvc
-@Configuration
-@EnableConfigurationProperties(MaskinportenValidatorProperties::class)
-class MaskinportenValidatorConfigurer(
-    internal val properties: MaskinportenValidatorProperties,
-) : WebMvcConfigurer {
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+@AutoConfigureAfter(AutoconfigureMaskinportenValidator::class)
+class MaskinportenValidatorAutoConfiguration {
+    @Bean
+    fun noopOrganizationValidator() = RequestAwareOrganizationValidator.NoopOrganizationValidator()
 
     @Bean
-    fun noopOrganizationValidator() = NoopOrganizationValidator()
+    @Primary
+    fun testConfig(testBuilder: MaskinportenValidatorTestBuilder) = testBuilder.getValidator()
 
     @Bean
-    fun config() = properties.toConfig()
+    @Primary
+    fun testValidator() = MaskinportenValidatorTestBuilder()
 
     @Bean
-    fun maskinportenValidator(config: MaskinportenValidatorConfig) = MaskinportenValidator(config)
-
-    @Bean
+    @ConditionalOnMissingBean(MaskinportenValidatorHandlerInterceptor::class)
     fun maskinportenHandlerInterceptor(
         maskinportenValidator: MaskinportenValidator,
         validators: List<RequestAwareOrganizationValidator>
@@ -38,6 +38,7 @@ class MaskinportenValidatorConfigurer(
         )
 
     @Bean
+    @ConditionalOnMissingBean(MaskinportenValidatorInterceptorHandler::class)
     fun maskinportenValidatorInterceptorHandler(maskinportenValidatorHandlerInterceptor: MaskinportenValidatorHandlerInterceptor) =
         MaskinportenValidatorInterceptorHandler(maskinportenValidatorHandlerInterceptor)
 }

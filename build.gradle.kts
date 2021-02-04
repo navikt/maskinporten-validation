@@ -1,8 +1,9 @@
-import org.jetbrains.kotlin.gradle.tasks.*
-
 plugins {
-    kotlin("jvm") version "1.4.21"
-    kotlin("plugin.serialization") version "1.4.21"
+    kotlin("jvm") version "1.4.30"
+    kotlin("plugin.serialization") version "1.4.30"
+    kotlin("plugin.spring") version "1.4.30"
+    id("org.springframework.boot") version "2.3.4.RELEASE"
+    id("io.spring.dependency-management") version "1.0.10.RELEASE"
     id("se.patrikerdes.use-latest-versions") version "0.2.14"
     id("net.researchgate.release") version "2.8.1"
     `maven-publish`

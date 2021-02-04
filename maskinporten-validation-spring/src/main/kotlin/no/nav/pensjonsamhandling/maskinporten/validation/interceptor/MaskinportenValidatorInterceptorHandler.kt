@@ -4,11 +4,11 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 class MaskinportenValidatorInterceptorHandler(
-    private val maskinportenHandlerInterceptor: MaskinportenHandlerInterceptor
+    private val maskinportenValidatorHandlerInterceptor: MaskinportenValidatorHandlerInterceptor
 ) : WebMvcConfigurer {
 
     @Override
     override fun addInterceptors(registry: InterceptorRegistry) {
-        registry.addInterceptor(maskinportenHandlerInterceptor)
+        registry.addInterceptor(maskinportenValidatorHandlerInterceptor)
     }
 }
