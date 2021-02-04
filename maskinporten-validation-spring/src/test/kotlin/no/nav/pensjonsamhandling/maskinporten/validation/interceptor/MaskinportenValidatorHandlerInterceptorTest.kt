@@ -44,7 +44,7 @@ internal class MaskinportenValidatorHandlerInterceptorTest {
     fun `Intercepts and rejects valid token with invalid orgno`() {
         mockMvc.get("/deny") {
             headers { setBearerAuth(validJws.serialize()) }
-        }.andExpect { status { isUnauthorized } }
+        }.andExpect { status { isForbidden } }
 
     }
 
