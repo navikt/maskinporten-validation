@@ -1,2 +1,3 @@
-no.nav.pensjonsamhandling.maskinporten.validation:
-      baseUrl: maskinporten.no
+maskinporten.validation:
+      baseUrl: https://maskinporten.no
+      proxy: localhost:8080

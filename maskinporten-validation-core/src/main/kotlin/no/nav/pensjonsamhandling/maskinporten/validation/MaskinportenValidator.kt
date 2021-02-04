@@ -23,9 +23,7 @@ open class MaskinportenValidator(
         )
         jwtClaimsSetVerifier = DefaultJWTClaimsVerifier(
             JWTClaimsSet.Builder()
-                .issuer(config.baseURL.toExternalForm().run {
-                    if (last() != '/') "$this/" else this
-                })
+                .issuer(config.baseURL.toExternalForm().postfix('/'))
                 .build(),
             setOf("client_id", "client_amr", ORGNO_CLAIM, "consumer", "exp", "iat", "jti")
         )
@@ -54,7 +52,7 @@ open class MaskinportenValidator(
 
 
     companion object {
-        internal const val SCOPE_CLAIM = "scope"
-        internal const val ORGNO_CLAIM = "client_orgno"
+        const val SCOPE_CLAIM = "scope"
+        const val ORGNO_CLAIM = "client_orgno"
     }
 }
