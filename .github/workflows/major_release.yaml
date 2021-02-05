@@ -14,7 +14,7 @@ jobs:
 
       - name: Determine version
         id: version
-        uses: zwaldowski/semver-release-action@v1
+        uses: zwaldowski/semver-release-action@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dry_run: true
@@ -29,6 +29,6 @@ jobs:
           RELEASE_VERSION: ${{ steps.version.outputs.version }}
 
       - name: Update version tag
-        uses: zwaldowski/semver-release-action@v1
+        uses: zwaldowski/semver-release-action@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

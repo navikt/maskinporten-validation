@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   dowload_artifact:
-    name: Generate and publish new major release
+    name: Generate and publish new minor release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -14,7 +14,7 @@ jobs:
 
       - name: Determine version
         id: version
-        uses: zwaldowski/semver-release-action@v1
+        uses: zwaldowski/semver-release-action@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dry_run: true
@@ -29,6 +29,6 @@ jobs:
           RELEASE_VERSION: ${{ steps.version.outputs.version }}
 
       - name: Update version tag
-        uses: zwaldowski/semver-release-action@v1
+        uses: zwaldowski/semver-release-action@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
