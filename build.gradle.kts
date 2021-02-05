@@ -4,6 +4,7 @@ plugins {
     id("org.springframework.boot") version "2.3.4.RELEASE"
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
     `maven-publish`
+    `java-library`
 }
 
 repositories {
@@ -14,22 +15,25 @@ subprojects {
     group = "no.nav.pensjonsamhandling"
     version = "0.0.1"
 
-//    publishing {
-//        publications {
-//            create<MavenPublication>("maven") {
-//                version = System.getenv("RELEASE_VERSION")
-//                from(components["java"])
-//            }
-//        }
-//        repositories {
-//            maven {
-//                name = "GitHubPackages"
-//                url = uri("https://maven.pkg.github.com/navikt/${rootProject.name}")
-//                credentials {
-//                    username = System.getenv("GITHUB_ACTOR")
-//                    password = System.getenv("GITHUB_TOKEN")
-//                }
-//            }
-//        }
-//    }
+    apply(plugin = "org.gradle.maven-publish")
+    apply(plugin = "org.gradle.java-library")
+
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                version = System.getenv("RELEASE_VERSION")
+                from(components["java"])
+            }
+        }
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/navikt/${rootProject.name}")
+                credentials {
+                    username = System.getenv("GITHUB_ACTOR")
+                    password = System.getenv("GITHUB_TOKEN")
+                }
+            }
+        }
+    }
 }
