@@ -27,28 +27,24 @@ class MaskinportenValidatorHandlerInterceptor(
         handler: Any
     ) = when {
         handler !is HandlerMethod -> true
-        preHandle(request, handler) -> true
+        handler.maskinportenAnnotation?.preHandle(request) ?: true -> true
         else -> throw ResponseStatusException(FORBIDDEN)
     }
 
-    private fun preHandle(
-        request: HttpServletRequest,
-        handler: HandlerMethod
-    ) = try {
-        val annotation = handler.maskinportenAnnotation
-
-        val validator = validators.firstOrNull(annotation.orgValidator::isInstance)
-            ?: throw BeanExpressionException("No bean of type ${annotation.orgValidator} exists. Did you remember to annotate the class as a @Component?")
-
-        maskinportenValidator(request.bearerToken, annotation.scope, validator, request)
+    private fun Maskinporten.preHandle(request: HttpServletRequest) = try {
+        maskinportenValidator(request.bearerToken, scope, validator, request)
     } catch (e: Exception) {
         LOG.debug("Failed to validate token.", e)
         throw ResponseStatusException(UNAUTHORIZED)
     }
 
-    private val HandlerMethod.maskinportenAnnotation: Maskinporten
+    private val HandlerMethod.maskinportenAnnotation: Maskinporten?
         get() = getMethodAnnotation(Maskinporten::class.java)
             ?: method.declaringClass.getAnnotation(Maskinporten::class.java)
+
+    private val Maskinporten.validator: RequestAwareOrganisationValidator
+        get() = validators.firstOrNull(orgValidator::isInstance)
+            ?: throw BeanExpressionException("No bean of type $orgValidator exists. Did you remember to annotate the class as a @Component?")
 
     private val HttpServletRequest.bearerToken: JWT
         get() = JWTParser.parse(getHeader("authorization")?.substringAfter("Bearer ", ""))
