@@ -15,7 +15,7 @@ repositories {
 
 dependencies {
     implementation(project(":maskinporten-validation-spring"))
-    implementation(project(":maskinporten-validation-test"))
+    api(project(":maskinporten-validation-test"))
     implementation(kotlin("stdlib"))
     implementation("javax.servlet", "javax.servlet-api", "4.0.1")
     implementation("org.springframework", "spring-webmvc")
