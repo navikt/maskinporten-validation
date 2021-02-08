@@ -13,7 +13,7 @@ import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfig
 import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfigurer
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorHandlerInterceptorTest.TestConfig
-import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganizationValidator.DenyingOrganizationValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator.DenyingOrganisationValidator
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -55,7 +55,7 @@ internal class MaskinportenValidatorHandlerInterceptorTest {
         fun testConfig() = testConfig
 
         @Bean
-        fun denyingOrganizationValidator() = DenyingOrganizationValidator()
+        fun denyingOrganisationValidator() = DenyingOrganisationValidator()
     }
 
     companion object {

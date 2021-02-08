@@ -18,6 +18,11 @@ subprojects {
     apply(plugin = "org.gradle.maven-publish")
     apply(plugin = "org.gradle.java-library")
 
+    java {
+        withSourcesJar()
+        withJavadocJar()
+    }
+
     publishing {
         publications {
             create<MavenPublication>("maven") {

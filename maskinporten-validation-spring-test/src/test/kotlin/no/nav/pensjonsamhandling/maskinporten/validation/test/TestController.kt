@@ -1,8 +1,7 @@
 package no.nav.pensjonsamhandling.maskinporten.validation.test
 
 import no.nav.pensjonsamhandling.maskinporten.validation.annotation.Maskinporten
-import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganizationValidator
-import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganizationValidator.DenyingOrganizationValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator.DenyingOrganisationValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.test.MaskinportenValidatorAutoConfigurationTest.Companion.SCOPE
 import org.springframework.http.HttpStatus.OK
 import org.springframework.stereotype.Controller
@@ -18,7 +17,7 @@ class TestController {
         throw ResponseStatusException(OK)
     }
 
-    @Maskinporten(SCOPE, DenyingOrganizationValidator::class)
+    @Maskinporten(SCOPE, DenyingOrganisationValidator::class)
     @GetMapping("/deny")
     fun denyMapping() {
         throw ResponseStatusException(OK)

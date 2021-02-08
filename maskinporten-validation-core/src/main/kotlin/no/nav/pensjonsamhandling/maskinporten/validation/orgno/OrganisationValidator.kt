@@ -1,6 +1,6 @@
 package no.nav.pensjonsamhandling.maskinporten.validation.orgno
 
 @FunctionalInterface
-interface OrganizationValidator<T> {
+interface OrganisationValidator<T> {
     operator fun invoke(orgno: String, o: T): Boolean
 }

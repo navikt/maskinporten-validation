@@ -9,7 +9,7 @@ import com.nimbusds.jwt.proc.BadJWTException
 import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier
 import com.nimbusds.jwt.proc.DefaultJWTProcessor
 import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfig
-import no.nav.pensjonsamhandling.maskinporten.validation.orgno.OrganizationValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.orgno.OrganisationValidator
 import java.text.ParseException
 
 open class MaskinportenValidator(
@@ -30,7 +30,7 @@ open class MaskinportenValidator(
     }
 
     /**
-     * @return Organization to whom the token belongs.
+     * @return Organisation to whom the token belongs.
      */
     operator fun invoke(token: JWT, requiredScope: String) =
         jwtProcessor.process(token, null)
@@ -46,9 +46,9 @@ open class MaskinportenValidator(
 
     operator fun <T> invoke(
         token: JWT, requiredScope: String,
-        organizationValidator: OrganizationValidator<T>,
+        organisationValidator: OrganisationValidator<T>,
         o: T
-    ) = organizationValidator(this(token, requiredScope), o)
+    ) = organisationValidator(this(token, requiredScope), o)
 
 
     companion object {

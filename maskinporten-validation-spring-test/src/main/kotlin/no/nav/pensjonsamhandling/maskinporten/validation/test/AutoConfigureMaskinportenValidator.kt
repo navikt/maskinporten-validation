@@ -9,4 +9,4 @@ import kotlin.annotation.AnnotationTarget.*
 @Retention(RUNTIME)
 @Inherited
 @Import(MaskinportenValidatorAutoConfiguration::class)
-annotation class AutoconfigureMaskinportenValidator
+annotation class AutoConfigureMaskinportenValidator

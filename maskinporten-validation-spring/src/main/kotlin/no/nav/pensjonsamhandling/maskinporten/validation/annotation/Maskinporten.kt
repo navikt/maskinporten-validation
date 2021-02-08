@@ -1,8 +1,8 @@
 package no.nav.pensjonsamhandling.maskinporten.validation.annotation
 
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorInterceptorHandler
-import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganizationValidator
-import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganizationValidator.NoopOrganizationValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator.NoopOrganisationValidator
 import org.springframework.context.annotation.Import
 import kotlin.annotation.AnnotationRetention.RUNTIME
 import kotlin.annotation.AnnotationTarget.*
@@ -13,5 +13,5 @@ import kotlin.reflect.KClass
 @Import(MaskinportenValidatorInterceptorHandler::class)
 annotation class Maskinporten(
     val scope: String,
-    val orgValidator: KClass<out RequestAwareOrganizationValidator> = NoopOrganizationValidator::class
+    val orgValidator: KClass<out RequestAwareOrganisationValidator> = NoopOrganisationValidator::class
 )
