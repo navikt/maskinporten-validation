@@ -22,7 +22,7 @@ class MaskinportenValidatorConfigurer(
     fun noopOrganisationValidator() = NoopOrganisationValidator()
 
     @Bean
-    fun config() = properties.toConfig()
+    fun maskinportenValidatorConfig() = properties.toConfig()
 
     @Bean
     fun maskinportenValidator(config: MaskinportenValidatorConfig) = MaskinportenValidator(config)

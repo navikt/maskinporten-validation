@@ -23,11 +23,11 @@ class MaskinportenValidatorTestBuilder(
     private val jwk: RSAKey = RSAKeyGenerator(2048).keyID(keyId).generate()
     private val jwks: JWKSet = JWKSet(jwk)
 
-    private val config = MaskinportenValidatorConfig(URL("https://maskinporten.no/")).apply {
+    private val maskinportenValidatorConfig = MaskinportenValidatorConfig(URL("https://maskinporten.no/")).apply {
         jwkSet = ImmutableJWKSet(jwks)
     }
 
-    fun getValidator() = MaskinportenValidator(config)
+    fun getValidator() = MaskinportenValidator(maskinportenValidatorConfig)
 
     private val jwsHeader: JWSHeader = JWSHeader.Builder(JWSAlgorithm.RS256)
         .jwk(jwk)
@@ -41,7 +41,7 @@ class MaskinportenValidatorTestBuilder(
         clientAmr: String,
         consumer: String,
     ): JWTClaimsSet = JWTClaimsSet.Builder()
-        .issuer(config.baseURL.toString())
+        .issuer(maskinportenValidatorConfig.baseURL.toString())
         .issueTime(Date())
         .expirationTime(Date(System.currentTimeMillis() + 300000L))
         .jwtID("jti")

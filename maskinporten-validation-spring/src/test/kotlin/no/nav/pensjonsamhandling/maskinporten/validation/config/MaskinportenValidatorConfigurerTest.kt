@@ -18,14 +18,14 @@ import java.net.URL
 internal class MaskinportenValidatorConfigurerTest {
 
     @Autowired
-    lateinit var config: MaskinportenValidatorConfig
+    lateinit var maskinportenValidatorConfig: MaskinportenValidatorConfig
 
     @Autowired
     lateinit var validators: List<RequestAwareOrganisationValidator>
 
     @Test
     fun `Spring autoconfigures MaskinportenConfig`(){
-        assertEquals(expectedConfig, config)
+        assertEquals(expectedConfig, maskinportenValidatorConfig)
     }
 
     @Test

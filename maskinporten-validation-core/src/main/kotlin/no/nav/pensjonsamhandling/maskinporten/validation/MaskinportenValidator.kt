@@ -13,17 +13,17 @@ import no.nav.pensjonsamhandling.maskinporten.validation.orgno.OrganisationValid
 import java.text.ParseException
 
 open class MaskinportenValidator(
-    private val config: MaskinportenValidatorConfig
+    private val maskinportenValidatorConfig: MaskinportenValidatorConfig
 ) {
 
     private val jwtProcessor = DefaultJWTProcessor<SecurityContext>().apply {
         jwsKeySelector = JWSVerificationKeySelector(
             RS256,
-            config.jwkSet
+            maskinportenValidatorConfig.jwkSet
         )
         jwtClaimsSetVerifier = DefaultJWTClaimsVerifier(
             JWTClaimsSet.Builder()
-                .issuer(config.baseURL.toExternalForm().postfix('/'))
+                .issuer(maskinportenValidatorConfig.baseURL.toExternalForm().postfix('/'))
                 .build(),
             setOf("client_id", "client_amr", ORGNO_CLAIM, "consumer", "exp", "iat", "jti")
         )
