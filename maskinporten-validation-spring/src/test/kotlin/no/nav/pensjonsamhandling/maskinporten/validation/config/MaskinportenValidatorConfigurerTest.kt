@@ -1,5 +1,6 @@
 package no.nav.pensjonsamhandling.maskinporten.validation.config
 
+import no.nav.pensjonsamhandling.maskinporten.validation.annotation.EnableMaskinportenValidation
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator.DenyingOrganisationValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator.NoopOrganisationValidator
@@ -12,7 +13,8 @@ import java.net.Proxy
 import java.net.Proxy.Type.HTTP
 import java.net.URL
 
-@SpringBootTest(classes = [MaskinportenValidatorConfigurer::class, DenyingOrganisationValidator::class])
+@SpringBootTest(classes = [DenyingOrganisationValidator::class])
+@EnableMaskinportenValidation
 internal class MaskinportenValidatorConfigurerTest {
 
     @Autowired
