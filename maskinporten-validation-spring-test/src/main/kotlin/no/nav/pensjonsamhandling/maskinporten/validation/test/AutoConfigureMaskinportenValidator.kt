@@ -5,7 +5,7 @@ import java.lang.annotation.Inherited
 import kotlin.annotation.AnnotationRetention.RUNTIME
 import kotlin.annotation.AnnotationTarget.*
 
-@Target(TYPE, FUNCTION, CLASS)
+@Target(FUNCTION, CLASS)
 @Retention(RUNTIME)
 @Inherited
 @Import(MaskinportenValidatorAutoConfiguration::class)

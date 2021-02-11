@@ -9,7 +9,7 @@ import kotlin.annotation.AnnotationTarget.*
 import kotlin.reflect.KClass
 
 @Retention(RUNTIME)
-@Target(FUNCTION, TYPE, CLASS)
+@Target(FUNCTION, CLASS)
 @Import(MaskinportenValidatorInterceptorHandler::class)
 annotation class Maskinporten(
     val scope: String,
