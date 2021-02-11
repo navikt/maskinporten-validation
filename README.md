@@ -28,7 +28,7 @@ Member | Description
 ---|---
 maskinportenValidatorConfig: MaskinportenValidatorConfig | The config supplying the network parameters.
 invoke(token: JWT, requiredScope: String): Boolean | Returns whether the token is valid and contains the required scope. <br> token - The token to validate. <br> requiredScope - The scope required to access the endpoint.
-invoke(token: JWT, requiredScope: String, organisationValidator: OrganisationValidator<T>, o: T): Boolean | Returns whether the token is valid and contains the required scope, and the organisation is accepted by the OrganisationValidator. <br><br> organisationValidator - The validator to use for validating the organisation number <br> o - Additional parameter for the organisationValidator.
+invoke( <br> token: JWT, <br> requiredScope: String, <br> organisationValidator: OrganisationValidator<T>, <br> o: T <br> ): Boolean | Returns whether the token is valid and contains the required scope, and the organisation is accepted by the OrganisationValidator. <br><br> organisationValidator - The validator to use for validating the organisation number <br> o - Additional parameter for the organisationValidator.
 
 ---
 
