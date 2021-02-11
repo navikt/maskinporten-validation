@@ -15,6 +15,6 @@ data class MaskinportenValidatorConfig(
     var jwkSet: JWKSource<SecurityContext> = RemoteJWKSet(
         URL(baseURL, "/jwk"),
         DefaultResourceRetriever().apply {
-            proxy = proxy
+            proxy = this@MaskinportenValidatorConfig.proxy
         })
 }
