@@ -35,6 +35,7 @@ class MaskinportenValidatorHandlerInterceptor(
         maskinportenValidator(request.bearerToken, scope, validator, request)
     } catch (e: Exception) {
         LOG.debug("Failed to validate token.", e)
+        LOG.debug("Token claims:\n{}", request.bearerToken.jwtClaimsSet)
         throw ResponseStatusException(UNAUTHORIZED)
     }
 
