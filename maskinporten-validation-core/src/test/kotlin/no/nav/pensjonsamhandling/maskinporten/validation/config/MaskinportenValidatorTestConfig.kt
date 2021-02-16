@@ -7,9 +7,10 @@ import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
+import net.minidev.json.JSONObject
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
-import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.ORGNO_CLAIM
+import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.CONSUMER_CLAIM
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.SCOPE_CLAIM
 import java.net.URL
 import java.time.Instant
@@ -37,6 +38,11 @@ object MaskinportenValidatorTestConfig {
         .keyID("bogus")
         .build()
 
+    private fun getConsumer(orgno: String) = JSONObject().apply {
+        set("authority", "iso6523-actorid-upis")
+        set("ID", "0192:$orgno")
+    }
+
     private val jwtClaimsSet: JWTClaimsSet = JWTClaimsSet.Builder()
         .issuer(testConfig.baseURL.toString())
         .issueTime(Date())
@@ -46,7 +52,7 @@ object MaskinportenValidatorTestConfig {
         .claim("client_id", null)
         .claim("client_amr", null)
         .claim("consumer", null)
-        .claim(ORGNO_CLAIM, "bogus")
+        .claim(CONSUMER_CLAIM, getConsumer("bogus"))
         .build()
 
     private val expiredClaimsSet: JWTClaimsSet = JWTClaimsSet.Builder(jwtClaimsSet)

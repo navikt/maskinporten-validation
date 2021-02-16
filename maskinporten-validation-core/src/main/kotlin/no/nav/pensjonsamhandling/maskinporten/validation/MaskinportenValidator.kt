@@ -8,6 +8,7 @@ import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.proc.BadJWTException
 import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier
 import com.nimbusds.jwt.proc.DefaultJWTProcessor
+import net.minidev.json.JSONObject
 import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfig
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.OrganisationValidator
 import java.text.ParseException
@@ -25,7 +26,7 @@ open class MaskinportenValidator(
             JWTClaimsSet.Builder()
                 .issuer(maskinportenValidatorConfig.baseURL.toExternalForm().postfix('/'))
                 .build(),
-            setOf("client_id", "client_amr", ORGNO_CLAIM, "consumer", "exp", "iat", "jti")
+            setOf("client_id", "client_amr", CONSUMER_CLAIM, "exp", "iat", "jti")
         )
     }
 
@@ -41,7 +42,7 @@ open class MaskinportenValidator(
                     requiredScope in it.getStringArrayClaim(SCOPE_CLAIM)
                 }
             }
-            ?.getStringClaim(ORGNO_CLAIM)
+            ?.orgno
             ?: throw BadJWTException("Token missing required scope.")
 
     operator fun <T> invoke(
@@ -50,9 +51,19 @@ open class MaskinportenValidator(
         o: T
     ) = organisationValidator(this(token, requiredScope), o)
 
+    private val JWTClaimsSet.orgno: String?
+        get() = supplier ?: consumer
+
+    private val JWTClaimsSet.supplier: String?
+        get() = getStringClaim(SUPPLIER_CLAIM)?.substringAfterLast(':')
+
+    private val JWTClaimsSet.consumer: String?
+        get() = (getClaim(CONSUMER_CLAIM) as JSONObject?)?.getAsString("ID")?.substringAfterLast(':')
+
 
     companion object {
         const val SCOPE_CLAIM = "scope"
-        const val ORGNO_CLAIM = "client_orgno"
+        const val CONSUMER_CLAIM = "consumer"
+        const val SUPPLIER_CLAIM = "supplier"
     }
 }

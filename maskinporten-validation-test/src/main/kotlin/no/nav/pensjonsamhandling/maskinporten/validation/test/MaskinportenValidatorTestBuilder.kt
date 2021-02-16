@@ -7,10 +7,11 @@ import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
+import net.minidev.json.JSONObject
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
-import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.ORGNO_CLAIM
+import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.CONSUMER_CLAIM
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.SCOPE_CLAIM
 import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfig
 import java.net.URL
@@ -34,6 +35,11 @@ class MaskinportenValidatorTestBuilder(
         .keyID(keyId)
         .build()
 
+    private fun getConsumer(orgno: String) = JSONObject().apply {
+        set("authority", "iso6523-actorid-upis")
+        set("ID", "0192:$orgno")
+    }
+
     private fun getJwtClaimsSet(
         scope: String,
         orgno: String,
@@ -49,7 +55,7 @@ class MaskinportenValidatorTestBuilder(
         .claim("client_id", clientId)
         .claim("client_amr", clientAmr)
         .claim("consumer", consumer)
-        .claim(ORGNO_CLAIM, orgno)
+        .claim(CONSUMER_CLAIM, getConsumer(orgno))
         .build()
 
     fun generateToken(

@@ -9,7 +9,9 @@ import com.nimbusds.jose.jwk.gen.RSAKeyGenerator
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
-import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
+import net.minidev.json.JSONObject
+import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.CONSUMER_CLAIM
+import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.SCOPE_CLAIM
 import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfig
 import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfigurer
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorHandlerInterceptorTest.TestConfig
@@ -73,16 +75,20 @@ internal class MaskinportenValidatorHandlerInterceptorTest {
             .keyID(TEST_KEY_ID)
             .build()
 
+        private fun getConsumer(orgno: String) = JSONObject().apply {
+            set("authority", "iso6523-actorid-upis")
+            set("ID", "0192:$orgno")
+        }
+
         private val jwtClaimsSet: JWTClaimsSet = JWTClaimsSet.Builder()
             .issuer(testConfig.baseURL.toString())
             .issueTime(Date())
             .expirationTime(Date(System.currentTimeMillis() + 300000L))
             .jwtID("bogus")
-            .claim(MaskinportenValidator.SCOPE_CLAIM, listOf(TEST_SCOPE))
+            .claim(SCOPE_CLAIM, listOf(TEST_SCOPE))
             .claim("client_id", "bogus")
             .claim("client_amr", "bogus")
-            .claim("consumer", "bogus")
-            .claim(MaskinportenValidator.ORGNO_CLAIM, "bogus")
+            .claim(CONSUMER_CLAIM, getConsumer("bogus"))
             .build()
 
         val validJws = SignedJWT(jwsHeader, jwtClaimsSet).apply {
