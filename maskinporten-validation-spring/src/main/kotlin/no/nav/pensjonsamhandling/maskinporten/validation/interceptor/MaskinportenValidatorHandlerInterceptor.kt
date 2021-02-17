@@ -28,10 +28,14 @@ class MaskinportenValidatorHandlerInterceptor(
     ) = when {
         handler !is HandlerMethod -> true
         handler.maskinportenAnnotation?.preHandle(request) ?: true -> true
-        else -> throw ResponseStatusException(FORBIDDEN)
+        else -> {
+            LOG.debug("Rejected by orgnr validator.\nValidator class: {}", handler.validatorClassname)
+            throw ResponseStatusException(FORBIDDEN)
+        }
     }
 
     private fun Maskinporten.preHandle(request: HttpServletRequest) = try {
+        LOG.debug("Received request for {}", request.contextPath)
         maskinportenValidator(request.bearerToken, scope, validator, request)
     } catch (e: Exception) {
         LOG.debug("Failed to validate token.", e)
@@ -42,6 +46,9 @@ class MaskinportenValidatorHandlerInterceptor(
         }
         throw ResponseStatusException(UNAUTHORIZED)
     }
+
+    private val HandlerMethod.validatorClassname: String?
+        get() = maskinportenAnnotation?.orgValidator?.qualifiedName
 
     private val HandlerMethod.maskinportenAnnotation: Maskinporten?
         get() = getMethodAnnotation(Maskinporten::class.java)
