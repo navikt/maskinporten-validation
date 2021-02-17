@@ -35,7 +35,7 @@ class MaskinportenValidatorHandlerInterceptor(
     }
 
     private fun Maskinporten.preHandle(request: HttpServletRequest) = try {
-        LOG.debug("Received request for {}", request.contextPath)
+        LOG.debug("Received request for {}", request.requestURI)
         maskinportenValidator(request.bearerToken, scope, validator, request)
     } catch (e: Exception) {
         LOG.debug("Failed to validate token.", e)
