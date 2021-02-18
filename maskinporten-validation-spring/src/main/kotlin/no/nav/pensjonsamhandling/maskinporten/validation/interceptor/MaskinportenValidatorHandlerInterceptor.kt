@@ -27,19 +27,16 @@ class MaskinportenValidatorHandlerInterceptor(
         handler: Any
     ) = when {
         handler !is HandlerMethod -> true
-        handler.maskinportenAnnotation?.preHandle(request) ?: true -> {
-            LOG.debug("Accepted.")
-            true
-        }
-        else -> {
-            LOG.debug("Rejected.")
-            throw ResponseStatusException(FORBIDDEN)
-        }
+        handler.maskinportenAnnotation?.preHandle(request) ?: true -> true
+        else -> throw ResponseStatusException(FORBIDDEN)
     }
 
     private fun Maskinporten.preHandle(request: HttpServletRequest) = try {
         LOG.debug("Received request for: {}", request.requestURI)
-        maskinportenValidator(request.bearerToken, scope, validator, request)
+        maskinportenValidator(request.bearerToken, scope, validator, request).also {
+            if(it) LOG.debug("Accepted.")
+            else LOG.debug("Rejected.")
+        }
     } catch (e: Exception) {
         LOG.debug("Failed to validate token.", e)
         try {
