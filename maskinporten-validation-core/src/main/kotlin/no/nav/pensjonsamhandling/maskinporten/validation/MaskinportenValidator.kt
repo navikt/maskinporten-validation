@@ -55,7 +55,7 @@ open class MaskinportenValidator(
         get() = supplier ?: consumer
 
     private val JWTClaimsSet.supplier: String?
-        get() = getStringClaim(SUPPLIER_CLAIM)?.substringAfterLast(':')
+        get() = (getClaim(SUPPLIER_CLAIM) as JSONObject?)?.getAsString("ID")?.substringAfterLast(':')
 
     private val JWTClaimsSet.consumer: String?
         get() = (getClaim(CONSUMER_CLAIM) as JSONObject?)?.getAsString("ID")?.substringAfterLast(':')
