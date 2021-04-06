@@ -23,6 +23,10 @@ subprojects {
         withJavadocJar()
     }
 
+    dependencies {
+        api("com.nimbusds", "nimbus-jose-jwt", "9.7")
+    }
+
     publishing {
         publications {
             create<MavenPublication>("maven") {

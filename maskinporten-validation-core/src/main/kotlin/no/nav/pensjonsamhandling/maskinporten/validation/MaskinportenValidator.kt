@@ -8,7 +8,6 @@ import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.proc.BadJWTException
 import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier
 import com.nimbusds.jwt.proc.DefaultJWTProcessor
-import net.minidev.json.JSONObject
 import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfig
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.OrganisationValidator
 import java.text.ParseException
@@ -55,10 +54,10 @@ open class MaskinportenValidator(
         get() = supplier ?: consumer
 
     private val JWTClaimsSet.supplier: String?
-        get() = (getClaim(SUPPLIER_CLAIM) as JSONObject?)?.getAsString("ID")?.substringAfterLast(':')
+        get() = getJSONObjectClaim(SUPPLIER_CLAIM)?.get("ID")?.toString()?.substringAfterLast(':')
 
     private val JWTClaimsSet.consumer: String?
-        get() = (getClaim(CONSUMER_CLAIM) as JSONObject?)?.getAsString("ID")?.substringAfterLast(':')
+        get() = getJSONObjectClaim(CONSUMER_CLAIM)?.get("ID")?.toString()?.substringAfterLast(':')
 
 
     companion object {

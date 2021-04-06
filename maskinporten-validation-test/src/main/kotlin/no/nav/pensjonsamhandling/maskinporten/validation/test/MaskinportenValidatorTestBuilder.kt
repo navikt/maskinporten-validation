@@ -7,7 +7,7 @@ import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
-import net.minidev.json.JSONObject
+import com.nimbusds.jose.shaded.json.JSONObject
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
