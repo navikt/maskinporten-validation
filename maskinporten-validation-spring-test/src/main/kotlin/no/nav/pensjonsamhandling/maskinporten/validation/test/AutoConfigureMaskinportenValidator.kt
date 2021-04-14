@@ -1,6 +1,6 @@
 package no.nav.pensjonsamhandling.maskinporten.validation.test
 
-import org.springframework.context.annotation.Import
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration
 import java.lang.annotation.Inherited
 import kotlin.annotation.AnnotationRetention.RUNTIME
 import kotlin.annotation.AnnotationTarget.*
@@ -8,5 +8,5 @@ import kotlin.annotation.AnnotationTarget.*
 @Target(FUNCTION, CLASS)
 @Retention(RUNTIME)
 @Inherited
-@Import(MaskinportenValidatorAutoConfiguration::class)
+@ImportAutoConfiguration
 annotation class AutoConfigureMaskinportenValidator

@@ -1,8 +1,8 @@
 plugins {
-    kotlin("jvm") version "1.4.30"
-    kotlin("plugin.spring") version "1.4.30"
-    id("org.springframework.boot") version "2.3.4.RELEASE"
-    id("io.spring.dependency-management") version "1.0.10.RELEASE"
+    kotlin("jvm") version "1.4.32"
+    kotlin("plugin.spring") version "1.4.32"
+    id("org.springframework.boot") version "2.4.3"
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
     `maven-publish`
     `java-library`
 }
@@ -24,7 +24,7 @@ subprojects {
     }
 
     dependencies {
-        api("com.nimbusds", "nimbus-jose-jwt", "9.7")
+        api("com.nimbusds", "nimbus-jose-jwt", "9.8.1")
     }
 
     publishing {

@@ -15,20 +15,20 @@ class MaskinportenValidatorAutoConfiguration {
 
     @Bean
     @Primary
-    fun testConfig(testBuilder: MaskinportenValidatorTestBuilder) = testBuilder.getValidator()
+    fun tokenGenerator() = MaskinportenValidatorTokenGenerator()
 
     @Bean
     @Primary
-    fun testValidator() = MaskinportenValidatorTestBuilder()
+    fun testValidator(tokenGenerator: MaskinportenValidatorTokenGenerator) = tokenGenerator.getValidator()
 
     @Bean
     @Primary
     fun maskinportenHandlerInterceptor(
-        maskinportenValidator: MaskinportenValidator,
+        testValidator: MaskinportenValidator,
         validators: List<RequestAwareOrganisationValidator>
     ): MaskinportenValidatorHandlerInterceptor =
         MaskinportenValidatorHandlerInterceptor(
-            maskinportenValidator,
+            testValidator,
             validators
         )
 

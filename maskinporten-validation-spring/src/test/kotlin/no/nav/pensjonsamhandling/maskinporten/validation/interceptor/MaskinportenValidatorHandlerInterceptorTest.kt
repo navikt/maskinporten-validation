@@ -39,14 +39,14 @@ internal class MaskinportenValidatorHandlerInterceptorTest {
     fun `Intercepts and accepts valid token`() {
         mockMvc.get("/bogus") {
             headers { setBearerAuth(validJws.serialize()) }
-        }.andExpect { status { isOk } }
+        }.andExpect { status { isOk() } }
     }
 
     @Test
     fun `Intercepts and rejects valid token with invalid orgno`() {
         mockMvc.get("/deny") {
             headers { setBearerAuth(validJws.serialize()) }
-        }.andExpect { status { isForbidden } }
+        }.andExpect { status { isForbidden() } }
 
     }
 

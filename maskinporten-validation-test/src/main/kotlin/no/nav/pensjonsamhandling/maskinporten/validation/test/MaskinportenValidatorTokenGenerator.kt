@@ -17,7 +17,7 @@ import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenVali
 import java.net.URL
 import java.util.*
 
-class MaskinportenValidatorTestBuilder(
+class MaskinportenValidatorTokenGenerator(
     keyId: String = "keyId"
 ) {
 

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 
-class MaskinportenValidatorTestBuilderTest {
+class MaskinportenValidatorTokenGeneratorTest {
 
     @Test
     fun `Test validator approves correct key`() {
@@ -20,8 +20,8 @@ class MaskinportenValidatorTestBuilderTest {
     companion object {
         private const val SCOPE = "testScope"
         private const val ORGNO = "testOrgno"
-        private val builderA = MaskinportenValidatorTestBuilder("keyA")
-        private val builderB = MaskinportenValidatorTestBuilder("keyB")
+        private val builderA = MaskinportenValidatorTokenGenerator("keyA")
+        private val builderB = MaskinportenValidatorTokenGenerator("keyB")
 
     }
 }

@@ -19,26 +19,26 @@ internal class MaskinportenValidatorAutoConfigurationTest {
     private lateinit var mockMvc: MockMvc
 
     @Autowired
-    private lateinit var testBuilder: MaskinportenValidatorTestBuilder
+    private lateinit var tokenGenerator: MaskinportenValidatorTokenGenerator
 
     @Test
     fun `Intercepts and accepts valid token`() {
         mockMvc.get("/bogus") {
-            headers { setBearerAuth(testBuilder.generateToken(SCOPE, ORGNO).serialize()) }
-        }.andExpect { status { isOk } }
+            headers { setBearerAuth(tokenGenerator.generateToken(SCOPE, ORGNO).serialize()) }
+        }.andExpect { status { isOk() } }
     }
 
     @Test
     fun `Intercepts and rejects invalid token`() {
         mockMvc.get("/deny") {
             headers { setBearerAuth(invalidBuilder.generateToken(SCOPE, ORGNO).serialize()) }
-        }.andExpect { status { isUnauthorized } }
+        }.andExpect { status { isUnauthorized() } }
     }
 
     companion object {
         const val SCOPE = "testScope"
         const val ORGNO = "orgno"
 
-        val invalidBuilder = MaskinportenValidatorTestBuilder("invalid")
+        val invalidBuilder = MaskinportenValidatorTokenGenerator("invalid")
     }
 }
