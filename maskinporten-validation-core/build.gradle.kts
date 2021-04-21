@@ -11,7 +11,6 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("net.minidev", "json-smart", "2.3")
     testImplementation("org.junit.jupiter", "junit-jupiter", "5.7.0")
 }
 
