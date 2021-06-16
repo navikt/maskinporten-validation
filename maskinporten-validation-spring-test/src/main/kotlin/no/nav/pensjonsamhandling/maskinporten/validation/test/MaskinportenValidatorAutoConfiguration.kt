@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Primary
 class MaskinportenValidatorAutoConfiguration {
     @Bean
     @Primary
-    fun noopOrganisationValidator() = NoopOrganisationValidator()
+    fun testNoopOrganisationValidator() = NoopOrganisationValidator()
 
     @Bean
     @Primary
