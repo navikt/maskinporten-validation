@@ -4,6 +4,7 @@ import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorHandlerInterceptor
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorInterceptorHandler
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator.NoopOrganisationValidator
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
@@ -11,7 +12,8 @@ import org.springframework.context.annotation.Primary
 @Configuration
 class MaskinportenValidatorAutoConfiguration {
     @Bean
-    fun noopOrganisationValidator() = RequestAwareOrganisationValidator.NoopOrganisationValidator()
+    @Primary
+    fun noopOrganisationValidator() = NoopOrganisationValidator()
 
     @Bean
     @Primary
