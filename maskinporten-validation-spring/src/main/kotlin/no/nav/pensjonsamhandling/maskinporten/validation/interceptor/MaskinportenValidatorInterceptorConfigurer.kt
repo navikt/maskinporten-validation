@@ -3,7 +3,7 @@ package no.nav.pensjonsamhandling.maskinporten.validation.interceptor
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
-class MaskinportenValidatorInterceptorHandler(
+class MaskinportenValidatorInterceptorConfigurer(
     private val maskinportenValidatorHandlerInterceptor: MaskinportenValidatorHandlerInterceptor
 ) : WebMvcConfigurer {
 

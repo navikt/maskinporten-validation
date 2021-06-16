@@ -2,7 +2,7 @@ package no.nav.pensjonsamhandling.maskinporten.validation.test
 
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorHandlerInterceptor
-import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorInterceptorHandler
+import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorInterceptorConfigurer
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator.NoopOrganisationValidator
 import org.springframework.context.annotation.Bean
@@ -13,29 +13,25 @@ import org.springframework.context.annotation.Primary
 class MaskinportenValidatorAutoConfiguration {
     @Bean
     @Primary
-    fun testNoopOrganisationValidator() = NoopOrganisationValidator()
-
-    @Bean
-    @Primary
     fun tokenGenerator() = MaskinportenValidatorTokenGenerator()
 
     @Bean
     @Primary
-    fun testValidator(tokenGenerator: MaskinportenValidatorTokenGenerator) = tokenGenerator.getValidator()
+    fun maskinportenTestValidator(tokenGenerator: MaskinportenValidatorTokenGenerator) = tokenGenerator.getValidator()
 
     @Bean
     @Primary
-    fun maskinportenHandlerInterceptor(
+    fun noopOrganisationTestValidator() = NoopOrganisationValidator()
+
+    @Bean
+    @Primary
+    fun maskinportenValidatorHandlerTestInterceptor(
         testValidator: MaskinportenValidator,
         validators: List<RequestAwareOrganisationValidator>
-    ): MaskinportenValidatorHandlerInterceptor =
-        MaskinportenValidatorHandlerInterceptor(
-            testValidator,
-            validators
-        )
+    ) = MaskinportenValidatorHandlerInterceptor(testValidator, validators)
 
     @Bean
     @Primary
-    fun maskinportenValidatorInterceptorHandler(maskinportenValidatorHandlerInterceptor: MaskinportenValidatorHandlerInterceptor) =
-        MaskinportenValidatorInterceptorHandler(maskinportenValidatorHandlerInterceptor)
+    fun maskinportenValidatorTestInterceptorConfigurer(maskinportenValidatorHandlerInterceptor: MaskinportenValidatorHandlerInterceptor) =
+        MaskinportenValidatorInterceptorConfigurer(maskinportenValidatorHandlerInterceptor)
 }

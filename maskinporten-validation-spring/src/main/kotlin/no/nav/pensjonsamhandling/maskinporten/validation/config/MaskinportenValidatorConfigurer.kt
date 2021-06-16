@@ -2,7 +2,7 @@ package no.nav.pensjonsamhandling.maskinporten.validation.config
 
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorHandlerInterceptor
-import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorInterceptorHandler
+import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorInterceptorConfigurer
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator.NoopOrganisationValidator
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -17,10 +17,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class MaskinportenValidatorConfigurer(
     internal val properties: MaskinportenValidatorProperties,
 ) : WebMvcConfigurer {
-
-    @Bean
-    fun noopOrganisationValidator() = NoopOrganisationValidator()
-
     @Bean
     fun maskinportenValidatorConfig() = properties.toConfig()
 
@@ -28,12 +24,15 @@ class MaskinportenValidatorConfigurer(
     fun maskinportenValidator(config: MaskinportenValidatorConfig) = MaskinportenValidator(config)
 
     @Bean
-    fun maskinportenHandlerInterceptor(
+    fun noopOrganisationValidator() = NoopOrganisationValidator()
+
+    @Bean
+    fun maskinportenValidatorHandlerInterceptor(
         maskinportenValidator: MaskinportenValidator,
         validators: List<RequestAwareOrganisationValidator>,
     ) = MaskinportenValidatorHandlerInterceptor(maskinportenValidator, validators)
 
     @Bean
-    fun maskinportenValidatorInterceptorHandler(maskinportenValidatorHandlerInterceptor: MaskinportenValidatorHandlerInterceptor) =
-        MaskinportenValidatorInterceptorHandler(maskinportenValidatorHandlerInterceptor)
+    fun maskinportenValidatorHandlerInterceptorConfigurer(maskinportenValidatorHandlerInterceptor: MaskinportenValidatorHandlerInterceptor) =
+        MaskinportenValidatorInterceptorConfigurer(maskinportenValidatorHandlerInterceptor)
 }
