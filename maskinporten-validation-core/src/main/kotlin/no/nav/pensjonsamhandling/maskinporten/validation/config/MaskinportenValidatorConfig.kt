@@ -9,11 +9,12 @@ import java.net.URL
 
 data class MaskinportenValidatorConfig(
     val baseURL: URL,
+    val jwkURL: URL? = null,
+    val issuer: String? = null,
     internal val proxy: Proxy? = null
 ) {
-
     var jwkSet: JWKSource<SecurityContext> = RemoteJWKSet(
-        URL(baseURL, "/jwk"),
+        jwkURL ?: URL(baseURL, "/jwk"),
         DefaultResourceRetriever().apply {
             proxy = this@MaskinportenValidatorConfig.proxy
         })

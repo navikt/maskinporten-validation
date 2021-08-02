@@ -23,7 +23,7 @@ open class MaskinportenValidator(
         )
         jwtClaimsSetVerifier = DefaultJWTClaimsVerifier(
             JWTClaimsSet.Builder()
-                .issuer(maskinportenValidatorConfig.baseURL.toExternalForm().postfix('/'))
+                .issuer(maskinportenValidatorConfig.issuer ?: maskinportenValidatorConfig.baseURL.toExternalForm().postfix('/'))
                 .build(),
             setOf("client_id", "client_amr", CONSUMER_CLAIM, "exp", "iat", "jti")
         )
