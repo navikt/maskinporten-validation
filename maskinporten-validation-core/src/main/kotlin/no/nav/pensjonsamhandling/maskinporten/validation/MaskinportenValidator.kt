@@ -34,13 +34,7 @@ open class MaskinportenValidator(
      */
     operator fun invoke(token: JWT, requiredScope: String) =
         jwtProcessor.process(token, null)
-            .takeIf {
-                try {
-                    requiredScope == it.getStringClaim(SCOPE_CLAIM)
-                } catch (_: ParseException) {
-                    requiredScope in it.getStringArrayClaim(SCOPE_CLAIM)
-                }
-            }
+            .takeIf { it.hasScope(requiredScope) }
             ?.orgno
             ?: throw BadJWTException("Token missing required scope.")
 
@@ -58,6 +52,14 @@ open class MaskinportenValidator(
 
     private val JWTClaimsSet.consumer: String?
         get() = getJSONObjectClaim(CONSUMER_CLAIM)?.get("ID")?.toString()?.substringAfterLast(':')
+
+    private fun JWTClaimsSet.hasScope(requiredScope: String) = try {
+        requiredScope == getStringClaim(SCOPE_CLAIM)
+    } catch (_: ParseException) {
+        requiredScope in getStringArrayClaim(SCOPE_CLAIM)
+    } catch (_: ParseException) {
+        requiredScope in getStringListClaim(SCOPE_CLAIM)
+    }
 
 
     companion object {
