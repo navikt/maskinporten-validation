@@ -1,0 +1,4 @@
+maskinporten.validation:
+  baseUrl: https://maskinporten.no
+  permitAll:
+    - 1234567890

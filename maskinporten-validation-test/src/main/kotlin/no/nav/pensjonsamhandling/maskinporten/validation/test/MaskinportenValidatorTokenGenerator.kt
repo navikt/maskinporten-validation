@@ -14,21 +14,21 @@ import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.CONSUMER_CLAIM
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.SCOPE_CLAIM
 import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfig
-import java.net.URL
 import java.util.*
 
 class MaskinportenValidatorTokenGenerator(
+    val config: MaskinportenValidatorConfig,
     keyId: String = "keyId"
 ) {
 
     private val jwk: RSAKey = RSAKeyGenerator(2048).keyID(keyId).generate()
     private val jwks: JWKSet = JWKSet(jwk)
 
-    private val maskinportenValidatorConfig = MaskinportenValidatorConfig(URL("https://maskinporten.no/")).apply {
-        jwkSet = ImmutableJWKSet(jwks)
+    init {
+        config.jwkSet = ImmutableJWKSet(jwks)
     }
 
-    fun getValidator() = MaskinportenValidator(maskinportenValidatorConfig)
+    fun getValidator() = MaskinportenValidator(config)
 
     private val jwsHeader: JWSHeader = JWSHeader.Builder(JWSAlgorithm.RS256)
         .jwk(jwk)
@@ -47,7 +47,7 @@ class MaskinportenValidatorTokenGenerator(
         clientAmr: String,
         consumer: String,
     ): JWTClaimsSet = JWTClaimsSet.Builder()
-        .issuer(maskinportenValidatorConfig.baseURL.toString())
+        .issuer(config.baseURL.toString())
         .issueTime(Date())
         .expirationTime(Date(System.currentTimeMillis() + 300000L))
         .jwtID("jti")

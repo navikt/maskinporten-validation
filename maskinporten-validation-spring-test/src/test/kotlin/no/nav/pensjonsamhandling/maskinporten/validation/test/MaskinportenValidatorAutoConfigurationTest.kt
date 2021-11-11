@@ -1,5 +1,6 @@
 package no.nav.pensjonsamhandling.maskinporten.validation.test
 
+import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfig
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator.DenyingOrganisationValidator
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebM
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import java.net.URL
 
 @SpringBootTest(classes = [TestController::class, DenyingOrganisationValidator::class])
 @AutoConfigureMockMvc
@@ -35,10 +37,18 @@ internal class MaskinportenValidatorAutoConfigurationTest {
         }.andExpect { status { isUnauthorized() } }
     }
 
+    @Test
+    fun `Permits permitall`() {
+        mockMvc.get("/deny") {
+            headers { setBearerAuth(tokenGenerator.generateToken(SCOPE, "1234567890").serialize()) }
+        }.andExpect { status { isOk() } }
+    }
+
+
     companion object {
         const val SCOPE = "testScope"
         const val ORGNO = "orgno"
 
-        val invalidBuilder = MaskinportenValidatorTokenGenerator("invalid")
+        val invalidBuilder = MaskinportenValidatorTokenGenerator(MaskinportenValidatorConfig(URL("https://maskinporten.no/")), "invalid")
     }
 }

@@ -1,19 +1,24 @@
 package no.nav.pensjonsamhandling.maskinporten.validation.test
 
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorProperties
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorHandlerInterceptor
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorInterceptorConfigurer
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator.NoopOrganisationValidator
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 
 @Configuration
-class MaskinportenValidatorAutoConfiguration {
+@EnableConfigurationProperties(MaskinportenValidatorProperties::class)
+class MaskinportenValidatorAutoConfiguration(
+    val config: MaskinportenValidatorProperties
+) {
     @Bean
     @Primary
-    fun tokenGenerator() = MaskinportenValidatorTokenGenerator()
+    fun tokenGenerator() = MaskinportenValidatorTokenGenerator(config.toConfig())
 
     @Bean
     @Primary
