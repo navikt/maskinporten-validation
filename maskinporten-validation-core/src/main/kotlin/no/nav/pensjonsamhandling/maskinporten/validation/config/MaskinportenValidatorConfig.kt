@@ -9,6 +9,7 @@ import java.net.URL
 
 data class MaskinportenValidatorConfig(
     val baseURL: URL,
+    val permitAll: List<String> = emptyList(),
     internal val proxy: Proxy? = null
 ) {
 

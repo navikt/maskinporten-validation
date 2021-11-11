@@ -1,3 +1,5 @@
 maskinporten.validation:
       baseUrl: https://maskinporten.no
+      permitAll:
+            - "00000000"
       proxy: localhost:8080

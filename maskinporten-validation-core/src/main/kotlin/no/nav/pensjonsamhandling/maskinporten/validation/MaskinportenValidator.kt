@@ -42,7 +42,9 @@ open class MaskinportenValidator(
         token: JWT, requiredScope: String,
         organisationValidator: OrganisationValidator<T>,
         o: T
-    ) = organisationValidator(this(token, requiredScope), o)
+    ) = this(token, requiredScope).let { orgno ->
+        orgno in maskinportenValidatorConfig.permitAll || organisationValidator(orgno, o)
+    }
 
     private val JWTClaimsSet.orgno: String?
         get() = supplier ?: consumer

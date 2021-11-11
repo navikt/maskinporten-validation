@@ -37,6 +37,7 @@ internal class MaskinportenValidatorConfigurerTest {
     companion object {
         private val expectedConfig = MaskinportenValidatorConfig(
             URL("https://maskinporten.no/"),
+            listOf("00000000"),
             Proxy(HTTP, InetSocketAddress("localhost", 8080))
         )
     }

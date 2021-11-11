@@ -9,6 +9,7 @@ Config class containing network parameters.
 Member | Description
 ---|---
 baseUrl: URL | The base URL of the Maskinporten implementation issuing the tokens. (For production, this will be `https://maskinporten.no/`)
+permitAll: List<String> | OrgNos permitted to access all resources. Bypass orgno validation.
 proxy: Proxy (optional) | The proxy to use in order to reach Maskinporten. If none is supplied, the JVM default proxy will be used.
 
 ### OrganisationValidator

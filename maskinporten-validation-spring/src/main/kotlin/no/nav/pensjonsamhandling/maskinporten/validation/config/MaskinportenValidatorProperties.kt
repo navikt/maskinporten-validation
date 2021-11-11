@@ -11,11 +11,13 @@ import java.net.URL
 @ConfigurationProperties("maskinporten.validation")
 class MaskinportenValidatorProperties(
     private val baseURL: String,
+    private val permitAll: List<String> = emptyList(),
     private var proxy: String? = null
 ) {
 
     fun toConfig() = MaskinportenValidatorConfig(
         URL(baseURL.postfix('/')),
+        permitAll,
         proxy?.run {
             Proxy(
                 Proxy.Type.HTTP,
