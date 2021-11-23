@@ -18,7 +18,7 @@ class MaskinportenValidatorAutoConfiguration(
 ) {
     @Bean
     @Primary
-    fun tokenGenerator() = MaskinportenValidatorTokenGenerator(config.toConfig())
+    fun tokenGenerator() = MaskinportenValidatorTokenGenerator(permitAll = config.permitAll)
 
     @Bean
     @Primary

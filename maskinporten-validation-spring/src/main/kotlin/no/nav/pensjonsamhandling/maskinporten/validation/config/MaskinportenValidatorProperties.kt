@@ -12,7 +12,7 @@ import java.net.URL
 class MaskinportenValidatorProperties(
     environment: Environment.EnvType = Environment.EnvType.PROD,
     customUrl: String? = null,
-    private val permitAll: List<String> = emptyList(),
+    val permitAll: List<String> = emptyList(),
     proxy: String? = null
 ) {
     val environment = when (environment) {

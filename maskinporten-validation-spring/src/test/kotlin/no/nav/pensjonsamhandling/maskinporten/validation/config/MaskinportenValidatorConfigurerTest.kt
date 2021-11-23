@@ -28,7 +28,7 @@ internal class MaskinportenValidatorConfigurerTest {
     @Test
     fun `Spring autoconfigures MaskinportenConfig`(){
         assertEquals(expectedEnvironment, properties.environment)
-        assertTrue(properties.acceptAll.containsAll(expectedAcceptAll))
+        assertTrue(properties.permitAll.containsAll(expectedPermitAll))
         assertEquals(expectedProxy, properties.proxy)
     }
 
@@ -40,7 +40,7 @@ internal class MaskinportenValidatorConfigurerTest {
 
     companion object {
         private val expectedEnvironment = Environment.Prod
-        private val expectedAcceptAll = listOf("00000000")
+        private val expectedPermitAll = listOf("00000000")
         private val expectedProxy = Proxy(HTTP, InetSocketAddress("localhost", 8080))
     }
 }

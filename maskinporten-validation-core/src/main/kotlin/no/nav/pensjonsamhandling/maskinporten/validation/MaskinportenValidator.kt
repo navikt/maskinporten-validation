@@ -19,7 +19,8 @@ import java.text.ParseException
 
 open class MaskinportenValidator(
     private val environment: Environment = Environment.Prod,
-    private val proxy: Proxy? = null
+    private val proxy: Proxy? = null,
+    private val permitAll: List<String> = emptyList()
 ) {
     var jwkSet: JWKSource<SecurityContext> = RemoteJWKSet(
         URL(environment.baseURL, "/jwk"),
@@ -62,7 +63,7 @@ open class MaskinportenValidator(
         organisationValidator: OrganisationValidator<T>,
         o: T
     ) = this(token, requiredScope).let { orgno ->
-        orgno in maskinportenValidatorConfig.permitAll || organisationValidator(orgno, o)
+        orgno in permitAll || organisationValidator(orgno, o)
     }
 
     private val JWTClaimsSet.orgno: String?

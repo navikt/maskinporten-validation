@@ -1,11 +1,9 @@
 package no.nav.pensjonsamhandling.maskinporten.validation.test
 
 import com.nimbusds.jose.proc.BadJOSEException
-import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfig
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
-import java.net.URL
 
 class MaskinportenValidatorTokenGeneratorTest {
 
@@ -22,8 +20,8 @@ class MaskinportenValidatorTokenGeneratorTest {
     companion object {
         private const val SCOPE = "testScope"
         private const val ORGNO = "testOrgno"
-        private val builderA = MaskinportenValidatorTokenGenerator(MaskinportenValidatorConfig(URL("https://maskinporten.no/")), "keyA")
-        private val builderB = MaskinportenValidatorTokenGenerator(MaskinportenValidatorConfig(URL("https://maskinporten.no/")), "keyB")
+        private val builderA = MaskinportenValidatorTokenGenerator( "keyA")
+        private val builderB = MaskinportenValidatorTokenGenerator( "keyB")
 
     }
 }

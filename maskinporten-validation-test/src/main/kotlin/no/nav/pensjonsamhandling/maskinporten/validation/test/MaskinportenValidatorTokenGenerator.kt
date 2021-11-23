@@ -17,13 +17,14 @@ import no.nav.pensjonsamhandling.maskinporten.validation.config.Environment
 import java.util.*
 
 class MaskinportenValidatorTokenGenerator(
-    keyId: String = "keyId"
+    keyId: String = "keyId",
+    private val permitAll: List<String> = emptyList()
 ) {
 
     private val jwk: RSAKey = RSAKeyGenerator(2048).keyID(keyId).generate()
     private val jwks: JWKSet = JWKSet(jwk)
 
-    fun getValidator() = MaskinportenValidator().apply {
+    fun getValidator() = MaskinportenValidator(permitAll = permitAll).apply {
         jwkSet = ImmutableJWKSet(jwks)
     }
 
