@@ -4,7 +4,8 @@ Library for automatically handling the configuration of your validator and attem
 ## Configuration
 Key | Description
 ---|---
-maskinporten.validation.baseURL | The base URL of the Maskinporten implementation issuing the tokens. (For production, this will be `https://maskinporten.no/`)
+maskinporten.validation.environment (optional) | The environment to use for determining URLs. May be PROD, DEV or CUSTOM. Default: PROD.
+maskinporten.validation.customUrl (optional) | Base URL to use when environment is CUSTOM. Required if environment is CUSTOM, otherwise ignored. Example: `https://maskinporten.no/`
 maskinporten.validation.permitAll | List of orgnos permitted access to all resources. Bypasses orgno validation.
 maskinporten.validation.proxy (optional) | The proxy URL to use in order to reach Maskinporten. If none is supplied, the JVM default proxy will be used.
 

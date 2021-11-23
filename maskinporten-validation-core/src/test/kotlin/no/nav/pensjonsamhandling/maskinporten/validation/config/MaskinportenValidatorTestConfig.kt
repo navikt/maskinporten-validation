@@ -7,12 +7,13 @@ import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
+import com.nimbusds.jose.jwk.source.JWKSource
+import com.nimbusds.jose.proc.SecurityContext
 import com.nimbusds.jose.shaded.json.JSONObject
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.CONSUMER_CLAIM
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.SCOPE_CLAIM
-import java.net.URL
 import java.time.Instant
 import java.util.*
 
@@ -24,9 +25,7 @@ object MaskinportenValidatorTestConfig {
     private val invalidJwk: RSAKey = RSAKeyGenerator(2048).keyID("bogus").generate()
     private val jwks = JWKSet(jwk)
 
-    val testConfig = MaskinportenValidatorConfig(URL("https://maskinporten.no/")).apply {
-        jwkSet = ImmutableJWKSet(jwks)
-    }
+    val testJWKSet: JWKSource<SecurityContext> = ImmutableJWKSet(jwks)
 
     private val jwsHeader: JWSHeader = JWSHeader.Builder(JWSAlgorithm.RS256)
         .jwk(jwk)
@@ -44,7 +43,7 @@ object MaskinportenValidatorTestConfig {
     }
 
     private val jwtClaimsSet: JWTClaimsSet = JWTClaimsSet.Builder()
-        .issuer(testConfig.baseURL.toString())
+        .issuer(Environment.Prod.baseURL.toString())
         .issueTime(Date())
         .expirationTime(Date(System.currentTimeMillis() + 300000L))
         .jwtID(null)

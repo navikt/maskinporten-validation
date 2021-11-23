@@ -1,33 +1,52 @@
 package no.nav.pensjonsamhandling.maskinporten.validation
 
 import com.nimbusds.jose.JWSAlgorithm.RS256
+import com.nimbusds.jose.jwk.source.JWKSource
+import com.nimbusds.jose.jwk.source.RemoteJWKSet
 import com.nimbusds.jose.proc.JWSVerificationKeySelector
 import com.nimbusds.jose.proc.SecurityContext
+import com.nimbusds.jose.util.DefaultResourceRetriever
 import com.nimbusds.jwt.JWT
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.proc.BadJWTException
 import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier
 import com.nimbusds.jwt.proc.DefaultJWTProcessor
-import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfig
+import no.nav.pensjonsamhandling.maskinporten.validation.config.Environment
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.OrganisationValidator
+import java.net.Proxy
+import java.net.URL
 import java.text.ParseException
 
 open class MaskinportenValidator(
-    private val maskinportenValidatorConfig: MaskinportenValidatorConfig
+    private val environment: Environment = Environment.Prod,
+    private val proxy: Proxy? = null
 ) {
+    var jwkSet: JWKSource<SecurityContext> = RemoteJWKSet(
+        URL(environment.baseURL, "/jwk"),
+        DefaultResourceRetriever().apply {
+            proxy = this@MaskinportenValidator.proxy
+        })
+        set(value) {
+            field = value
+            jwtProcessor = DefaultJWTProcessor<SecurityContext>().apply {
+                jwsKeySelector = generateKeySelector()
+                jwtClaimsSetVerifier = generateClaimsVerifier()
+            }
+        }
 
-    private val jwtProcessor = DefaultJWTProcessor<SecurityContext>().apply {
-        jwsKeySelector = JWSVerificationKeySelector(
-            RS256,
-            maskinportenValidatorConfig.jwkSet
-        )
-        jwtClaimsSetVerifier = DefaultJWTClaimsVerifier(
-            JWTClaimsSet.Builder()
-                .issuer(maskinportenValidatorConfig.baseURL.toExternalForm().postfix('/'))
-                .build(),
-            setOf("client_id", "client_amr", CONSUMER_CLAIM, "exp", "iat", "jti")
-        )
+    private var jwtProcessor = DefaultJWTProcessor<SecurityContext>().apply {
+        jwsKeySelector = generateKeySelector()
+        jwtClaimsSetVerifier = generateClaimsVerifier()
     }
+
+    private fun generateKeySelector() = JWSVerificationKeySelector(RS256, jwkSet)
+
+    private fun <c: SecurityContext> generateClaimsVerifier() = DefaultJWTClaimsVerifier<c>(
+        JWTClaimsSet.Builder()
+            .issuer(environment.baseURL.toExternalForm().postfix('/'))
+            .build(),
+        setOf("client_id", "client_amr", CONSUMER_CLAIM, "exp", "iat", "jti")
+    )
 
     /**
      * @return Organisation to whom the token belongs.

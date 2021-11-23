@@ -7,16 +7,21 @@ import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
+import com.nimbusds.jose.jwk.source.JWKSource
+import com.nimbusds.jose.proc.SecurityContext
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import net.minidev.json.JSONObject
+import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.CONSUMER_CLAIM
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.SCOPE_CLAIM
-import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfig
+import no.nav.pensjonsamhandling.maskinporten.validation.config.Environment
 import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfigurer
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorHandlerInterceptorTest.TestConfig
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator.DenyingOrganisationValidator
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.TestConfiguration
@@ -25,15 +30,23 @@ import org.springframework.context.annotation.Primary
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-import java.net.URL
 import java.util.*
 
 @WebMvcTest(TestController::class)
 @ContextConfiguration(classes = [TestConfig::class, TestController::class, MaskinportenValidatorConfigurer::class])
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class MaskinportenValidatorHandlerInterceptorTest {
 
     @Autowired
+    private lateinit var maskinportenValidator: MaskinportenValidator
+
+    @Autowired
     private lateinit var mockMvc: MockMvc
+
+    @BeforeAll
+    fun init() {
+        maskinportenValidator.jwkSet = testJWKSet
+    }
 
     @Test
     fun `Intercepts and accepts valid token`() {
@@ -53,10 +66,6 @@ internal class MaskinportenValidatorHandlerInterceptorTest {
     @TestConfiguration
     class TestConfig {
         @Bean
-        @Primary
-        fun testConfig() = testConfig
-
-        @Bean
         fun denyingOrganisationValidator() = DenyingOrganisationValidator()
     }
 
@@ -66,9 +75,7 @@ internal class MaskinportenValidatorHandlerInterceptorTest {
         private val jwk: RSAKey = RSAKeyGenerator(2048).keyID(TEST_KEY_ID).generate()
         private val jwks = JWKSet(jwk)
 
-        val testConfig = MaskinportenValidatorConfig(URL("https://maskinporten.no/")).apply {
-            jwkSet = ImmutableJWKSet(jwks)
-        }
+        val testJWKSet: JWKSource<SecurityContext> = ImmutableJWKSet(jwks)
 
         private val jwsHeader: JWSHeader = JWSHeader.Builder(JWSAlgorithm.RS256)
             .jwk(jwk)
@@ -81,7 +88,7 @@ internal class MaskinportenValidatorHandlerInterceptorTest {
         }
 
         private val jwtClaimsSet: JWTClaimsSet = JWTClaimsSet.Builder()
-            .issuer(testConfig.baseURL.toString())
+            .issuer(Environment.Prod.baseURL.toString())
             .issueTime(Date())
             .expirationTime(Date(System.currentTimeMillis() + 300000L))
             .jwtID("bogus")

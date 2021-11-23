@@ -1,0 +1,4 @@
+maskinporten.validation:
+      environment: CUSTOM
+      customUrl: https://localhost
+      proxy: localhost:8080

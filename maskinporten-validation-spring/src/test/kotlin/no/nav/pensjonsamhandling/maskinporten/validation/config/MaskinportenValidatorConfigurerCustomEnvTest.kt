@@ -5,19 +5,22 @@ import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrgan
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator.DenyingOrganisationValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator.NoopOrganisationValidator
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.TestPropertySource
 import java.net.InetSocketAddress
 import java.net.Proxy
 import java.net.Proxy.Type.HTTP
+import java.net.URL
 
+@ActiveProfiles("custom")
 @SpringBootTest(classes = [DenyingOrganisationValidator::class])
 @EnableMaskinportenValidation
 @EnableConfigurationProperties(MaskinportenValidatorProperties::class)
-internal class MaskinportenValidatorConfigurerTest {
+internal class MaskinportenValidatorConfigurerCustomEnvTest {
 
     @Autowired
     lateinit var properties: MaskinportenValidatorProperties
@@ -27,8 +30,7 @@ internal class MaskinportenValidatorConfigurerTest {
 
     @Test
     fun `Spring autoconfigures MaskinportenConfig`(){
-        assertEquals(expectedEnvironment, properties.environment)
-        assertTrue(properties.acceptAll.containsAll(expectedAcceptAll))
+        assertEquals(expectedCustomUrl, properties.environment.baseURL)
         assertEquals(expectedProxy, properties.proxy)
     }
 
@@ -39,8 +41,7 @@ internal class MaskinportenValidatorConfigurerTest {
     }
 
     companion object {
-        private val expectedEnvironment = Environment.Prod
-        private val expectedAcceptAll = listOf("00000000")
+        private val expectedCustomUrl = URL("https://localhost")
         private val expectedProxy = Proxy(HTTP, InetSocketAddress("localhost", 8080))
     }
 }

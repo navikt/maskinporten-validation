@@ -10,15 +10,15 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":maskinporten-validation-core"))
     implementation(kotlin("stdlib"))
-    implementation("javax.servlet", "javax.servlet-api", "4.0.1")
-    testImplementation("org.junit.jupiter", "junit-jupiter", "5.7.0")
+    implementation(project(":maskinporten-validation-core"))
+    testImplementation(project(":maskinporten-validation-test"))
+    testImplementation("org.junit.jupiter", "junit-jupiter", "5.8.1")
 }
 
 tasks {
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "15"
+        kotlinOptions.jvmTarget = "17"
     }
     test {
         useJUnitPlatform()

@@ -20,10 +20,7 @@ class MaskinportenValidatorConfigurer(
     internal val properties: MaskinportenValidatorProperties,
 ) : WebMvcConfigurer {
     @Bean
-    fun maskinportenValidatorConfig() = properties.toConfig()
-
-    @Bean
-    fun maskinportenValidator(config: MaskinportenValidatorConfig) = MaskinportenValidator(config)
+    fun maskinportenValidator() = MaskinportenValidator(properties.environment, properties.proxy)
 
     @Bean
     fun noopOrganisationValidator() = NoopOrganisationValidator()

@@ -1,8 +1,8 @@
 package no.nav.pensjonsamhandling.maskinporten.validation.config
 
-import no.nav.pensjonsamhandling.maskinporten.validation.postfix
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
+import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException
 import java.net.InetSocketAddress
 import java.net.Proxy
 import java.net.URL
@@ -10,21 +10,32 @@ import java.net.URL
 @ConstructorBinding
 @ConfigurationProperties("maskinporten.validation")
 class MaskinportenValidatorProperties(
-    private val baseURL: String,
+    environment: Environment.EnvType = Environment.EnvType.PROD,
+    customUrl: String? = null,
     private val permitAll: List<String> = emptyList(),
-    private var proxy: String? = null
+    proxy: String? = null
 ) {
-
-    fun toConfig() = MaskinportenValidatorConfig(
-        URL(baseURL.postfix('/')),
-        permitAll,
-        proxy?.run {
-            Proxy(
-                Proxy.Type.HTTP,
-                InetSocketAddress(
-                    substringBeforeLast(':'),
-                    substringAfterLast(':', "8080").toInt()
-                )
+    val environment = when (environment) {
+        Environment.EnvType.PROD -> Environment.Prod
+        Environment.EnvType.DEV -> Environment.Dev
+        Environment.EnvType.CUSTOM -> Environment.Custom(
+            URL(
+                customUrl
+                    ?: throw InvalidConfigurationPropertyValueException(
+                        "maskinporten.validation.customUrl",
+                        customUrl,
+                        "Must be specified when environment is set."
+                    )
             )
-        })
+        )
+    }
+    val proxy = proxy?.run {
+        Proxy(
+            Proxy.Type.HTTP,
+            InetSocketAddress(
+                substringBeforeLast(':'),
+                substringAfterLast(':', "8080").toInt()
+            )
+        )
+    }
 }

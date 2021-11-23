@@ -11,12 +11,12 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    testImplementation("org.junit.jupiter", "junit-jupiter", "5.7.0")
+    testImplementation("org.junit.jupiter", "junit-jupiter", "5.8.1")
 }
 
 tasks {
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "15"
+        kotlinOptions.jvmTarget = "17"
     }
     test {
         useJUnitPlatform()
