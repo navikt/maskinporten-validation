@@ -23,6 +23,10 @@ subprojects {
         withJavadocJar()
     }
 
+    repositories {
+        mavenCentral()
+    }
+
     dependencies {
         api("com.nimbusds", "nimbus-jose-jwt", "9.15.2") {
             endorseStrictVersions()
