@@ -7,7 +7,6 @@ import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
-import com.nimbusds.jose.shaded.json.JSONObject
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
@@ -29,14 +28,14 @@ class MaskinportenValidatorTokenGenerator(
     }
 
     private val jwsHeader: JWSHeader = JWSHeader.Builder(JWSAlgorithm.RS256)
-        .jwk(jwk)
+        .jwk(jwk.toPublicJWK())
         .keyID(keyId)
         .build()
 
-    private fun getConsumer(orgno: String) = JSONObject().apply {
-        set("authority", "iso6523-actorid-upis")
-        set("ID", "0192:$orgno")
-    }
+    private fun getConsumer(orgno: String) = mapOf(
+        "authority" to "iso6523-actorid-upis",
+        "ID" to "0192:$orgno"
+    )
 
     private fun getJwtClaimsSet(
         scope: String,

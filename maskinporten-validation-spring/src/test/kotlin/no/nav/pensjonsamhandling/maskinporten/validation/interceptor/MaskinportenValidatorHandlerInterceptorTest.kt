@@ -11,7 +11,6 @@ import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
-import net.minidev.json.JSONObject
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.CONSUMER_CLAIM
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.SCOPE_CLAIM
@@ -26,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Primary
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -78,14 +76,14 @@ internal class MaskinportenValidatorHandlerInterceptorTest {
         val testJWKSet: JWKSource<SecurityContext> = ImmutableJWKSet(jwks)
 
         private val jwsHeader: JWSHeader = JWSHeader.Builder(JWSAlgorithm.RS256)
-            .jwk(jwk)
+            .jwk(jwk.toPublicJWK())
             .keyID(TEST_KEY_ID)
             .build()
 
-        private fun getConsumer(orgno: String) = JSONObject().apply {
-            set("authority", "iso6523-actorid-upis")
-            set("ID", "0192:$orgno")
-        }
+        private fun getConsumer(@Suppress("SameParameterValue") orgno: String) = mapOf(
+            "authority" to "iso6523-actorid-upis",
+            "ID" to "0192:$orgno"
+        )
 
         private val jwtClaimsSet: JWTClaimsSet = JWTClaimsSet.Builder()
             .issuer(Environment.Prod.baseURL.toString())

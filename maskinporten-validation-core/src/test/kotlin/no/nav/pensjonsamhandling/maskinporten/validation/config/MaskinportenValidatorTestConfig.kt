@@ -9,7 +9,6 @@ import com.nimbusds.jose.jwk.gen.RSAKeyGenerator
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
 import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
-import com.nimbusds.jose.shaded.json.JSONObject
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.CONSUMER_CLAIM
@@ -28,19 +27,19 @@ object MaskinportenValidatorTestConfig {
     val testJWKSet: JWKSource<SecurityContext> = ImmutableJWKSet(jwks)
 
     private val jwsHeader: JWSHeader = JWSHeader.Builder(JWSAlgorithm.RS256)
-        .jwk(jwk)
+        .jwk(jwk.toPublicJWK())
         .keyID(TEST_KEY_ID)
         .build()
 
     private val invalidJWSHeader: JWSHeader = JWSHeader.Builder(JWSAlgorithm.RS256)
-        .jwk(invalidJwk)
+        .jwk(invalidJwk.toPublicJWK())
         .keyID("bogus")
         .build()
 
-    private fun getConsumer(orgno: String) = JSONObject().apply {
-        set("authority", "iso6523-actorid-upis")
-        set("ID", "0192:$orgno")
-    }
+    private fun getConsumer(@Suppress("SameParameterValue") orgno: String) = mapOf(
+        "authority" to "iso6523-actorid-upis",
+        "ID" to "0192:$orgno"
+    )
 
     private val jwtClaimsSet: JWTClaimsSet = JWTClaimsSet.Builder()
         .issuer(Environment.Prod.baseURL.toString())

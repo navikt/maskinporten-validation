@@ -67,13 +67,14 @@ open class MaskinportenValidator(
     }
 
     private val JWTClaimsSet.orgno: String?
-        get() = supplier ?: consumer
+        get() = consumer?.get("ID")?.toString()?.substringAfterLast(':')
 
-    private val JWTClaimsSet.supplier: String?
-        get() = getJSONObjectClaim(SUPPLIER_CLAIM)?.get("ID")?.toString()?.substringAfterLast(':')
+    @Suppress("unused")
+    private val JWTClaimsSet.supplier: Map<String, Any>?
+        get() = getJSONObjectClaim(SUPPLIER_CLAIM)
 
-    private val JWTClaimsSet.consumer: String?
-        get() = getJSONObjectClaim(CONSUMER_CLAIM)?.get("ID")?.toString()?.substringAfterLast(':')
+    private val JWTClaimsSet.consumer: Map<String, Any>?
+        get() = getJSONObjectClaim(CONSUMER_CLAIM)
 
     private fun JWTClaimsSet.hasScope(requiredScope: String) = try {
         requiredScope == getStringClaim(SCOPE_CLAIM)
