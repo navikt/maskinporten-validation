@@ -18,7 +18,7 @@ import java.net.URL
 import java.text.ParseException
 
 open class MaskinportenValidator(
-    private val environment: Environment = Environment.Prod,
+    val environment: Environment = Environment.Prod,
     private val proxy: Proxy? = null,
     private val permitAll: List<String> = emptyList()
 ) {

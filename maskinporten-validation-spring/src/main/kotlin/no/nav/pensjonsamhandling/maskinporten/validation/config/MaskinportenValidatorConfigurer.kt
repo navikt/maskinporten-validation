@@ -20,14 +20,17 @@ class MaskinportenValidatorConfigurer(
     internal val properties: MaskinportenValidatorProperties,
 ) : WebMvcConfigurer {
     @Bean
-    fun maskinportenValidator() = MaskinportenValidator(properties.environment, properties.proxy, properties.permitAll)
+    fun maskinportenValidator() = listOfNotNull(
+        MaskinportenValidator(properties.environment, properties.proxy, properties.permitAll),
+        if(properties.environment == Environment.Ver2) MaskinportenValidator(Environment.Dev, properties.proxy, properties.permitAll) else null
+    )
 
     @Bean
     fun noopOrganisationValidator() = NoopOrganisationValidator()
 
     @Bean
     fun maskinportenValidatorHandlerInterceptor(
-        maskinportenValidator: MaskinportenValidator,
+        maskinportenValidator: List<MaskinportenValidator>,
         validators: List<RequestAwareOrganisationValidator>,
     ) = MaskinportenValidatorHandlerInterceptor(maskinportenValidator, validators)
 

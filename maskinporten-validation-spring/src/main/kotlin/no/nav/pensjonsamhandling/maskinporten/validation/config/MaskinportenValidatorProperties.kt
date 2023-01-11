@@ -17,6 +17,7 @@ class MaskinportenValidatorProperties(
 ) {
     val environment = when (environment) {
         Environment.EnvType.PROD -> Environment.Prod
+        Environment.EnvType.VER2 -> Environment.Ver2
         Environment.EnvType.DEV -> Environment.Dev
         Environment.EnvType.CUSTOM -> Environment.Custom(
             URL(

@@ -36,14 +36,14 @@ import java.util.*
 internal class MaskinportenValidatorHandlerInterceptorTest {
 
     @Autowired
-    private lateinit var maskinportenValidator: MaskinportenValidator
+    private lateinit var maskinportenValidator: List<MaskinportenValidator>
 
     @Autowired
     private lateinit var mockMvc: MockMvc
 
     @BeforeAll
     fun init() {
-        maskinportenValidator.jwkSet = testJWKSet
+        maskinportenValidator.first().jwkSet = testJWKSet
     }
 
     @Test

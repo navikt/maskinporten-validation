@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class MaskinportenValidatorHandlerInterceptor(
-    private val maskinportenValidator: MaskinportenValidator,
+    private val maskinportenValidator: List<MaskinportenValidator>,
     private val validators: List<RequestAwareOrganisationValidator>
 ) : HandlerInterceptor {
 
@@ -33,7 +33,9 @@ class MaskinportenValidatorHandlerInterceptor(
 
     private fun Maskinporten.preHandle(request: HttpServletRequest) = try {
         LOG.debug("Received request for: {}", request.requestURI)
-        maskinportenValidator(request.bearerToken, scope, validator, request).also {
+        val env = maskinportenValidator.firstOrNull { it.environment.baseURL.toString() == request.bearerToken.jwtClaimsSet.issuer }
+            ?: maskinportenValidator.first()
+        env(request.bearerToken, scope, validator, request).also {
             if(it) LOG.debug("Accepted.")
             else LOG.debug("Rejected.")
         }

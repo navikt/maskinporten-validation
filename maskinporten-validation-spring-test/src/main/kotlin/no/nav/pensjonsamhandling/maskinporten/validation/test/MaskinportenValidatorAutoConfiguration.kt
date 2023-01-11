@@ -31,7 +31,7 @@ class MaskinportenValidatorAutoConfiguration(
     @Bean
     @Primary
     fun maskinportenValidatorHandlerTestInterceptor(
-        testValidator: MaskinportenValidator,
+        testValidator: List<MaskinportenValidator>,
         validators: List<RequestAwareOrganisationValidator>
     ) = MaskinportenValidatorHandlerInterceptor(testValidator, validators)
 
