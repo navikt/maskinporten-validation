@@ -9,7 +9,7 @@ Sealed class used to determine which instance of Maskinporten to use.
 Member | Description
 ---|---
 Prod | (Static) Production environment. `https://maskinporten.no/`
-Dev | (Static) Development environment. `https://ver2.maskinporten.no/`
+Dev | (Static) Development environment. `https://test.maskinporten.no/`
 Custom | Custom environment for integration testing. Takes a user-specified baseURL.
 
 ### OrganisationValidator
