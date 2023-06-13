@@ -1,2 +1,2 @@
-no.nav.pensjonsamhandling.maskinporten.validation.test.AutoConfigureMaskinportenValidator=\
+# AutoConfigureMaskinportenValidator auto-configuration imports
 no.nav.pensjonsamhandling.maskinporten.validation.test.MaskinportenValidatorAutoConfiguration

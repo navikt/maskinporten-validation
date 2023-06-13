@@ -6,12 +6,12 @@ import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.Maskinporte
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorInterceptorConfigurer
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator.NoopOrganisationValidator
+import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 
-@Configuration
+@AutoConfiguration
 @EnableConfigurationProperties(MaskinportenValidatorProperties::class)
 class MaskinportenValidatorAutoConfiguration(
     val config: MaskinportenValidatorProperties
