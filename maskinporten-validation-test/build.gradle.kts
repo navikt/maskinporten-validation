@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("jvm")
@@ -13,12 +13,14 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation(project(":maskinporten-validation-core"))
     testImplementation(project(":maskinporten-validation-test"))
-    testImplementation("org.junit.jupiter", "junit-jupiter", "5.9.1")
+    testImplementation("org.junit.jupiter", "junit-jupiter", "5.11.0")
 }
 
 tasks {
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+        }
     }
     test {
         useJUnitPlatform()

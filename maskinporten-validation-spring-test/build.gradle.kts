@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
@@ -17,19 +17,21 @@ dependencies {
     api(project(":maskinporten-validation-spring"))
     api(project(":maskinporten-validation-test"))
     implementation(kotlin("stdlib"))
-    implementation("javax.servlet", "javax.servlet-api", "4.0.1")
+    implementation("jakarta.servlet", "jakarta.servlet-api", "6.1.0")
     implementation("org.springframework", "spring-webmvc")
     implementation("org.springframework.boot", "spring-boot")
     implementation("org.springframework.boot", "spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
-    testImplementation("org.junit.jupiter", "junit-jupiter", "5.9.1")
+    testImplementation("org.junit.jupiter", "junit-jupiter", "5.11.0")
 }
 
 tasks {
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
-        dependsOn(processResources)
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+//            dependsOn(processResources)
+        }
     }
     withType<BootJar> {
         enabled = false

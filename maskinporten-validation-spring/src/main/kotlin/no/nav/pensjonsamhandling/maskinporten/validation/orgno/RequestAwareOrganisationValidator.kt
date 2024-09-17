@@ -1,6 +1,6 @@
 package no.nav.pensjonsamhandling.maskinporten.validation.orgno
 
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 
 interface RequestAwareOrganisationValidator : OrganisationValidator<HttpServletRequest> {
     class NoopOrganisationValidator : RequestAwareOrganisationValidator {

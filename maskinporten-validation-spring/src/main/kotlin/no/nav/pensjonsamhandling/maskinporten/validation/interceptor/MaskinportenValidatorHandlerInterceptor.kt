@@ -2,6 +2,8 @@ package no.nav.pensjonsamhandling.maskinporten.validation.interceptor
 
 import com.nimbusds.jwt.JWT
 import com.nimbusds.jwt.JWTParser
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.annotation.Maskinporten
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator
@@ -13,8 +15,6 @@ import org.springframework.http.HttpStatus.UNAUTHORIZED
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.HandlerInterceptor
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 class MaskinportenValidatorHandlerInterceptor(
     private val maskinportenValidator: List<MaskinportenValidator>,

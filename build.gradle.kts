@@ -1,8 +1,8 @@
 plugins {
-    kotlin("jvm") version "1.7.21"
-    kotlin("plugin.spring") version "1.7.21"
-    id("org.springframework.boot") version "2.7.5"
-    id("io.spring.dependency-management") version "1.1.0"
+    kotlin("jvm") version "2.0.20"
+    kotlin("plugin.spring") version "2.0.20"
+    id("org.springframework.boot") version "3.3.3"
+    id("io.spring.dependency-management") version "1.1.6"
     `maven-publish`
     `java-library`
 }
@@ -28,7 +28,7 @@ subprojects {
     }
 
     dependencies {
-        api("com.nimbusds", "nimbus-jose-jwt", "9.25.6") {
+        api("com.nimbusds", "nimbus-jose-jwt", "9.41.1") {
             endorseStrictVersions()
         }
     }

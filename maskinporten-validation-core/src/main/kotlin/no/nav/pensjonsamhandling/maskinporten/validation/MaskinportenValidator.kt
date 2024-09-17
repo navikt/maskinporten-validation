@@ -2,7 +2,7 @@ package no.nav.pensjonsamhandling.maskinporten.validation
 
 import com.nimbusds.jose.JWSAlgorithm.RS256
 import com.nimbusds.jose.jwk.source.JWKSource
-import com.nimbusds.jose.jwk.source.RemoteJWKSet
+import com.nimbusds.jose.jwk.source.JWKSourceBuilder
 import com.nimbusds.jose.proc.JWSVerificationKeySelector
 import com.nimbusds.jose.proc.SecurityContext
 import com.nimbusds.jose.util.DefaultResourceRetriever
@@ -14,7 +14,6 @@ import com.nimbusds.jwt.proc.DefaultJWTProcessor
 import no.nav.pensjonsamhandling.maskinporten.validation.config.Environment
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.OrganisationValidator
 import java.net.Proxy
-import java.net.URL
 import java.text.ParseException
 
 open class MaskinportenValidator(
@@ -22,11 +21,11 @@ open class MaskinportenValidator(
     private val proxy: Proxy? = null,
     private val permitAll: List<String> = emptyList()
 ) {
-    var jwkSet: JWKSource<SecurityContext> = RemoteJWKSet(
-        URL(environment.baseURL, "/jwk"),
+    var jwkSet: JWKSource<SecurityContext> = JWKSourceBuilder.create<SecurityContext>(
+        environment.baseURL.toURI().resolve("/jwk").toURL(),
         DefaultResourceRetriever().apply {
             proxy = this@MaskinportenValidator.proxy
-        })
+        }).build()
         set(value) {
             field = value
             jwtProcessor = DefaultJWTProcessor<SecurityContext>().apply {
