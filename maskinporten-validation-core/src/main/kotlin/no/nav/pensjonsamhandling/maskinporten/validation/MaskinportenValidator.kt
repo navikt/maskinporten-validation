@@ -54,7 +54,7 @@ open class MaskinportenValidator(
         jwtProcessor.process(token, null)
             .takeIf { it.hasScope(requiredScope) }
             ?.orgno
-            ?: throw MissingScopeException("Token missing required scope.")
+            ?: throw MissingScopeException(requiredScope)
 
     operator fun <T> invoke(
         token: JWT, requiredScope: String,

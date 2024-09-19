@@ -40,14 +40,18 @@ class MaskinportenValidatorHandlerInterceptor(
             if(it) LOG.debug("Accepted.")
             else LOG.debug("Rejected.")
         }
-    } catch (e: Exception) {
+    }
+    catch (e: MissingScopeException) {
+        LOG.debug("Missing required scope.", e)
+        throw ResponseStatusException(FORBIDDEN)
+    }
+    catch (e: Exception) {
         LOG.debug("Failed to validate token.", e)
         try {
             LOG.debug("Token claims:\n{}", request.bearerToken.jwtClaimsSet)
         } catch (_: Exception) {
             LOG.debug("Missing bearer token.")
         }
-        if (e is MissingScopeException) throw ResponseStatusException(FORBIDDEN)
         throw ResponseStatusException(UNAUTHORIZED)
     }
 
