@@ -7,7 +7,7 @@ jobs:
     name: Generate and publish new major release
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
       id-token: write
       checks: write
@@ -25,14 +25,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dry_run: true
           bump: major
-
-      - name: Determine version
-        id: version
-        uses: zwaldowski/semver-release-action@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          dry_run: true
-          bump: patch
 
       - name: Publish new version
         run: gradle publish
