@@ -36,3 +36,4 @@ jobs:
         uses: zwaldowski/semver-release-action@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          bump: minor

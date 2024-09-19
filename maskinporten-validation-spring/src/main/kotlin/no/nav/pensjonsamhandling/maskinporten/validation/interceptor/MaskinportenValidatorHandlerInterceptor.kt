@@ -46,6 +46,7 @@ class MaskinportenValidatorHandlerInterceptor(
         } catch (_: Exception) {
             LOG.debug("Missing bearer token.")
         }
+        if (e.message == "Token missing required scope.") throw ResponseStatusException(FORBIDDEN)
         throw ResponseStatusException(UNAUTHORIZED)
     }
 
