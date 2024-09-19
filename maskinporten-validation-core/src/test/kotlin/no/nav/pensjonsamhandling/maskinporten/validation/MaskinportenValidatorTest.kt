@@ -1,7 +1,6 @@
 package no.nav.pensjonsamhandling.maskinporten.validation
 
 import com.nimbusds.jose.proc.BadJOSEException
-import com.nimbusds.jwt.proc.BadJWTException
 import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorTestConfig.TEST_SCOPE
 import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorTestConfig.expiredJws
 import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorTestConfig.invalidJws
@@ -34,6 +33,6 @@ internal class MaskinportenValidatorTest {
 
     @Test
     fun `Rejects token missing required scope`() {
-        assertThrows(BadJWTException::class.java) { validator(validJws, "bogus") }
+        assertThrows(MissingScopeException::class.java) { validator(validJws, "bogus") }
     }
 }

@@ -8,7 +8,6 @@ import com.nimbusds.jose.proc.SecurityContext
 import com.nimbusds.jose.util.DefaultResourceRetriever
 import com.nimbusds.jwt.JWT
 import com.nimbusds.jwt.JWTClaimsSet
-import com.nimbusds.jwt.proc.BadJWTException
 import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier
 import com.nimbusds.jwt.proc.DefaultJWTProcessor
 import no.nav.pensjonsamhandling.maskinporten.validation.config.Environment
@@ -55,7 +54,7 @@ open class MaskinportenValidator(
         jwtProcessor.process(token, null)
             .takeIf { it.hasScope(requiredScope) }
             ?.orgno
-            ?: throw BadJWTException("Token missing required scope.")
+            ?: throw MissingScopeException("Token missing required scope.")
 
     operator fun <T> invoke(
         token: JWT, requiredScope: String,

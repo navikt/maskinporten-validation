@@ -5,6 +5,7 @@ import com.nimbusds.jwt.JWTParser
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.MissingScopeException
 import no.nav.pensjonsamhandling.maskinporten.validation.annotation.Maskinporten
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator
 import org.slf4j.Logger
@@ -46,7 +47,7 @@ class MaskinportenValidatorHandlerInterceptor(
         } catch (_: Exception) {
             LOG.debug("Missing bearer token.")
         }
-        if (e.message == "Token missing required scope.") throw ResponseStatusException(FORBIDDEN)
+        if (e is MissingScopeException) throw ResponseStatusException(FORBIDDEN)
         throw ResponseStatusException(UNAUTHORIZED)
     }
 

@@ -1,4 +1,5 @@
 import com.nimbusds.jose.proc.BadJOSEException
+import no.nav.pensjonsamhandling.maskinporten.validation.MissingScopeException
 import no.nav.pensjonsamhandling.maskinporten.validation.test.MaskinportenValidatorTokenGenerator
 import org.junit.jupiter.api.Test
 
@@ -17,7 +18,7 @@ internal class ManualValidationTest {
 
     @Test
     fun `Deny incorrect scope`() {
-        assertThrows<BadJOSEException> { app.acceptAnyOrgno(tokenGenerator.generateToken("not:my/scope", "12345678910")) }
+        assertThrows<MissingScopeException> { app.acceptAnyOrgno(tokenGenerator.generateToken("not:my/scope", "12345678910")) }
     }
 
     @Test
