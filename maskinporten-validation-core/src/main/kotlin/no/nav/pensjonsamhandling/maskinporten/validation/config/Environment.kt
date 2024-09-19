@@ -1,5 +1,6 @@
 package no.nav.pensjonsamhandling.maskinporten.validation.config
 
+import java.net.URI
 import java.net.URL
 
 sealed class Environment(val baseURL: URL) {
@@ -9,8 +10,8 @@ sealed class Environment(val baseURL: URL) {
         DEV,
         CUSTOM
     }
-    object Prod: Environment(URL("https://maskinporten.no/"))
-    object Ver2: Environment(URL("https://ver2.maskinporten.no/"))
-    object Dev: Environment(URL("https://test.maskinporten.no/"))
+    object Prod: Environment(URI.create("https://maskinporten.no/").toURL())
+    object Ver2: Environment(URI.create("https://ver2.maskinporten.no/").toURL())
+    object Dev: Environment(URI.create("https://test.maskinporten.no/").toURL())
     class Custom(baseUrl: URL): Environment(baseUrl)
 }
