@@ -7,7 +7,7 @@ jobs:
     name: Generate and publish new patch release
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
       id-token: write
       checks: write
