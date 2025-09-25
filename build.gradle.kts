@@ -28,7 +28,7 @@ subprojects {
     }
 
     dependencies {
-        api("com.nimbusds", "nimbus-jose-jwt", "9.41.1") {
+        api("com.nimbusds", "nimbus-jose-jwt", "10.5") {
             endorseStrictVersions()
         }
     }
