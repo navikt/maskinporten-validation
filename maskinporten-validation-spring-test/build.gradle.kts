@@ -23,7 +23,8 @@ dependencies {
     implementation("org.springframework.boot", "spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
-    testImplementation("org.junit.jupiter", "junit-jupiter", "5.11.0")
+    testImplementation(kotlin("test"))
+    testImplementation("org.junit.jupiter", "junit-jupiter", "5.13.4")
 }
 
 tasks {

@@ -16,11 +16,12 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation(project(":maskinporten-validation-spring"))
     implementation("org.springframework.boot", "spring-boot-starter")
+    testImplementation(kotlin("test"))
+    testImplementation("org.junit.jupiter", "junit-jupiter", "5.13.4")
     testImplementation("org.springframework.boot", "spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
     testImplementation(project(":maskinporten-validation-spring-test"))
-    testImplementation("org.junit.jupiter", "junit-jupiter", "5.11.0")
 }
 
 tasks {

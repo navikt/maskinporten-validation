@@ -11,7 +11,8 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    testImplementation("org.junit.jupiter", "junit-jupiter", "5.11.0")
+    testImplementation(kotlin("test"))
+    testImplementation("org.junit.jupiter", "junit-jupiter", "5.13.4")
 }
 
 tasks {
