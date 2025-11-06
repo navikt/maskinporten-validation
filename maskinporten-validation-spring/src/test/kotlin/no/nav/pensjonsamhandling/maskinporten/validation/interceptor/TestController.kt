@@ -16,7 +16,7 @@ class TestController {
 
     @GetMapping("/bogus")
     fun acceptMapping(
-        @RequestAttribute pid: String,
+        @RequestAttribute clientPid: String,
         @RequestAttribute orgno: String,
     ) {
         throw ResponseStatusException(OK)

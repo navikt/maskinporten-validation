@@ -6,8 +6,17 @@ class ManualValidation(
 ) {
     private val customOrgnoValidator = CustomOrgnoValidator()
     private val customPidValidator = CustomPidValidator()
+    private val customConsentValidator = CustomConsentValidator()
 
     fun acceptAnyOrgno(token: JWT) = validator(token, "my:scope/here")
 
-    fun acceptOnlyMyOrgnoAndPid(token: JWT) = validator(token, "my:scope/here", customOrgnoValidator, customPidValidator, null)
+    fun acceptOnlyMyOrgnoAndPid(token: JWT) = validator(
+        token = token,
+        requiredScope = "my:scope/here",
+        requiredConsent = "my-consent-here",
+        organisationValidator = customOrgnoValidator,
+        pidValidator = customPidValidator,
+        consentValidator = customConsentValidator,
+        o = null
+    )
 }

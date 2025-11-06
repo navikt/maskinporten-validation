@@ -5,8 +5,11 @@ import com.nimbusds.jwt.JWTParser
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.MissingConsentException
 import no.nav.pensjonsamhandling.maskinporten.validation.MissingScopeException
+import no.nav.pensjonsamhandling.maskinporten.validation.annotation.Consent
 import no.nav.pensjonsamhandling.maskinporten.validation.annotation.Maskinporten
+import no.nav.pensjonsamhandling.maskinporten.validation.consent.RequestAwareConsentValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.pid.RequestAwarePidValidator
 import org.slf4j.Logger
@@ -24,6 +27,7 @@ class MaskinportenValidatorHandlerInterceptor(
     private val maskinportenValidator: List<MaskinportenValidator>,
     private val organisationValidators: List<RequestAwareOrganisationValidator>,
     private val pidValidators: List<RequestAwarePidValidator>,
+    private val consentValidators: List<RequestAwareConsentValidator>,
 ) : HandlerInterceptor {
 
     override fun preHandle(
@@ -40,11 +44,20 @@ class MaskinportenValidatorHandlerInterceptor(
         LOG.debug("Received request for: {}", request.requestURI)
         val env = maskinportenValidator.firstOrNull { it.environment.baseURL.toString() == request.bearerToken.jwtClaimsSet.issuer }
             ?: maskinportenValidator.first()
-        env(request.bearerToken, scope, organisationValidator, pidValidator, request).apply {
+        env(
+            token = request.bearerToken,
+            requiredScope = scope,
+            requiredConsent = consent.value.takeUnless { it.isBlank() },
+            organisationValidator = organisationValidator,
+            pidValidator = pidValidator,
+            consentValidator = consent.consentValidator,
+            o = request
+        ).apply {
             if(accepted) {
                 LOG.debug("Accepted.")
                 RequestContextHolder.currentRequestAttributes().apply {
-                    if (pid != null) setAttribute("pid", pid!!, SCOPE_REQUEST)
+                    if (pid != null) setAttribute("clientPid", pid!!, SCOPE_REQUEST)
+                    if (consentingPid != null) setAttribute("consentingPid", consentingPid!!, SCOPE_REQUEST)
                     setAttribute("orgno", orgno, SCOPE_REQUEST)
                 }
             }
@@ -53,6 +66,10 @@ class MaskinportenValidatorHandlerInterceptor(
     }
     catch (e: MissingScopeException) {
         LOG.debug("Missing required scope.", e)
+        throw ResponseStatusException(FORBIDDEN)
+    }
+    catch (e: MissingConsentException) {
+        LOG.debug("Missing required consent.", e)
         throw ResponseStatusException(FORBIDDEN)
     }
     catch (e: Exception) {
@@ -78,6 +95,11 @@ class MaskinportenValidatorHandlerInterceptor(
         get() = pidValidators.firstOrNull(pidValidatorClass::isInstance)
             ?.also { LOG.debug("PID validator: {}", it::class.qualifiedName) }
             ?: throw BeanExpressionException("No bean of type $pidValidatorClass exists. Did you remember to annotate the class as a @Component?")
+
+    private val Consent.consentValidator: RequestAwareConsentValidator
+        get() = consentValidators.firstOrNull(consentValidatorClass::isInstance)
+            ?.also { LOG.debug("Consent validator: {}", it::class.qualifiedName) }
+            ?: throw BeanExpressionException("No bean of type $consentValidatorClass exists. Did you remember to annotate the class as a @Component?")
 
     private val HttpServletRequest.bearerToken: JWT
         get() = JWTParser.parse(getHeader("authorization")?.substringAfter("Bearer ", ""))

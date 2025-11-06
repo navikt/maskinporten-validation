@@ -18,4 +18,5 @@ annotation class Maskinporten(
     val scope: String,
     val orgValidatorClass: KClass<out RequestAwareOrganisationValidator> = NoopOrganisationValidator::class,
     val pidValidatorClass: KClass<out RequestAwarePidValidator> = NoopPidValidator::class,
+    val consent: Consent = Consent("")
 )

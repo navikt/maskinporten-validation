@@ -9,12 +9,12 @@ class MaskinportenValidatorTokenGeneratorTest {
 
     @Test
     fun `Test validator approves correct key`() {
-        assertDoesNotThrow { builderA.getValidator().invoke(builderA.generateToken(SCOPE, ORGNO), SCOPE) }
+        assertDoesNotThrow { builderA.getValidator().invoke(builderA.generateToken(SCOPE, ORGNO), SCOPE, null) }
     }
 
     @Test
     fun `Test validator rejects incorrect key`() {
-        assertThrows<BadJOSEException> { builderA.getValidator().invoke(builderB.generateToken(SCOPE, ORGNO), SCOPE) }
+        assertThrows<BadJOSEException> { builderA.getValidator().invoke(builderB.generateToken(SCOPE, ORGNO), SCOPE, null) }
     }
 
     companion object {

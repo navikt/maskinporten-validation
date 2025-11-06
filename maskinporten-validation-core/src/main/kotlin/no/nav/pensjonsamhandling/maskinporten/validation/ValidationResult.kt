@@ -4,4 +4,5 @@ class ValidationResult(
     val accepted: Boolean,
     val orgno: String,
     val pid: String?,
+    val consentingPid: String?
 )

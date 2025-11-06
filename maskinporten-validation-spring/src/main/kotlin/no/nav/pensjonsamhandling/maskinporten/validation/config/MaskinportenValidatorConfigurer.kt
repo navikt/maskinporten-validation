@@ -1,6 +1,8 @@
 package no.nav.pensjonsamhandling.maskinporten.validation.config
 
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.consent.RequestAwareConsentValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.consent.RequestAwareConsentValidator.NoopConsentValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorHandlerInterceptor
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorInterceptorConfigurer
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator
@@ -34,11 +36,15 @@ class MaskinportenValidatorConfigurer(
     fun noopPidValidator() = NoopPidValidator()
 
     @Bean
+    fun noopConsentValidator() = NoopConsentValidator()
+
+    @Bean
     fun maskinportenValidatorHandlerInterceptor(
         maskinportenValidator: List<MaskinportenValidator>,
         organisationValidators: List<RequestAwareOrganisationValidator>,
-        pidValidators: List<RequestAwarePidValidator>
-    ) = MaskinportenValidatorHandlerInterceptor(maskinportenValidator, organisationValidators, pidValidators)
+        pidValidators: List<RequestAwarePidValidator>,
+        consentValidators: List<RequestAwareConsentValidator>
+    ) = MaskinportenValidatorHandlerInterceptor(maskinportenValidator, organisationValidators, pidValidators, consentValidators)
 
     @Bean
     fun maskinportenValidatorHandlerInterceptorConfigurer(maskinportenValidatorHandlerInterceptor: MaskinportenValidatorHandlerInterceptor) =
