@@ -11,6 +11,7 @@ import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.CONSUMER_CLAIM
+import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.PID_CLAIM
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.SCOPE_CLAIM
 import no.nav.pensjonsamhandling.maskinporten.validation.config.Environment
 import java.util.*
@@ -43,6 +44,7 @@ class MaskinportenValidatorTokenGenerator(
         clientId: String,
         clientAmr: String,
         consumer: String,
+        pid: String?,
     ): JWTClaimsSet = JWTClaimsSet.Builder()
         .issuer(Environment.Prod.baseURL.toString())
         .issueTime(Date())
@@ -53,6 +55,9 @@ class MaskinportenValidatorTokenGenerator(
         .claim("client_amr", clientAmr)
         .claim("consumer", consumer)
         .claim(CONSUMER_CLAIM, getConsumer(orgno))
+        .let {
+            if (pid != null) it.claim(PID_CLAIM, pid) else it
+        }
         .build()
 
     fun generateToken(
@@ -60,8 +65,9 @@ class MaskinportenValidatorTokenGenerator(
         orgno: String,
         clientId: String = "client_id",
         clientAmr: String = "client_amr",
-        consumer: String = "consumer"
-    ) = SignedJWT(jwsHeader, getJwtClaimsSet(scope, orgno, clientId, clientAmr, consumer)).apply {
+        consumer: String = "consumer",
+        pid: String? = null,
+    ) = SignedJWT(jwsHeader, getJwtClaimsSet(scope, orgno, clientId, clientAmr, consumer, pid)).apply {
         sign(DefaultJWSSignerFactory().createJWSSigner(jwk))
     }
 }

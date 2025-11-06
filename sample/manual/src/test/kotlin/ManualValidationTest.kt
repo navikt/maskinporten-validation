@@ -27,12 +27,29 @@ internal class ManualValidationTest {
     }
 
     @Test
-    fun `Accept only my Orgno`() {
-        assertTrue(app.acceptOnlyMyOrgno(tokenGenerator.generateToken("my:scope/here", "12345678910")))
+    fun `Accept only my Orgno and PID`() {
+        assertTrue(app.acceptOnlyMyOrgnoAndPid(tokenGenerator.generateToken(
+            scope = "my:scope/here",
+            orgno = "12345678",
+            pid = "12345678910"
+        )).accepted)
     }
 
     @Test
     fun `Deny wrong Orgno`() {
-        assertFalse(app.acceptOnlyMyOrgno(tokenGenerator.generateToken("my:scope/here", "10987654321")))
+        assertFalse(app.acceptOnlyMyOrgnoAndPid(tokenGenerator.generateToken(
+            scope = "my:scope/here",
+            orgno = "10987654321",
+            pid = "12345678910"
+        )).accepted)
+    }
+
+    @Test
+    fun `Deny wrong PID`() {
+        assertFalse(app.acceptOnlyMyOrgnoAndPid(tokenGenerator.generateToken(
+            scope = "my:scope/here",
+            orgno = "10987654321",
+            pid = "01987654321"
+        )).accepted)
     }
 }

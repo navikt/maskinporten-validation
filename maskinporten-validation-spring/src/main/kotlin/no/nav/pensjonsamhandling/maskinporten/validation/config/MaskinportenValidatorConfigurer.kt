@@ -5,6 +5,8 @@ import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.Maskinporte
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorInterceptorConfigurer
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator.NoopOrganisationValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.pid.RequestAwarePidValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.pid.RequestAwarePidValidator.NoopPidValidator
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
@@ -29,10 +31,14 @@ class MaskinportenValidatorConfigurer(
     fun noopOrganisationValidator() = NoopOrganisationValidator()
 
     @Bean
+    fun noopPidValidator() = NoopPidValidator()
+
+    @Bean
     fun maskinportenValidatorHandlerInterceptor(
         maskinportenValidator: List<MaskinportenValidator>,
-        validators: List<RequestAwareOrganisationValidator>,
-    ) = MaskinportenValidatorHandlerInterceptor(maskinportenValidator, validators)
+        organisationValidators: List<RequestAwareOrganisationValidator>,
+        pidValidators: List<RequestAwarePidValidator>
+    ) = MaskinportenValidatorHandlerInterceptor(maskinportenValidator, organisationValidators, pidValidators)
 
     @Bean
     fun maskinportenValidatorHandlerInterceptorConfigurer(maskinportenValidatorHandlerInterceptor: MaskinportenValidatorHandlerInterceptor) =

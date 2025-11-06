@@ -12,14 +12,26 @@ import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier
 import com.nimbusds.jwt.proc.DefaultJWTProcessor
 import no.nav.pensjonsamhandling.maskinporten.validation.config.Environment
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.OrganisationValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.orgno.PidValidator
 import java.net.Proxy
 import java.text.ParseException
 
 open class MaskinportenValidator(
     val environment: Environment = Environment.Prod,
     private val proxy: Proxy? = null,
-    private val permitAll: List<String> = emptyList()
+    private val permitAll: List<String> = emptyList(),
+    private val requirePid: Boolean = false
 ) {
+    private val requiredClaims = setOfNotNull(
+        "client_id",
+        "client_amr",
+        CONSUMER_CLAIM,
+        "exp",
+        "iat",
+        "jti",
+        if (requirePid) PID_CLAIM else null
+    )
+
     var jwkSet: JWKSource<SecurityContext> = JWKSourceBuilder.create<SecurityContext>(
         environment.baseURL.toURI().resolve("/jwk").toURL(),
         DefaultResourceRetriever().apply {
@@ -44,35 +56,46 @@ open class MaskinportenValidator(
         JWTClaimsSet.Builder()
             .issuer(environment.baseURL.toExternalForm().postfix('/'))
             .build(),
-        setOf("client_id", "client_amr", CONSUMER_CLAIM, "exp", "iat", "jti")
+        requiredClaims
     )
 
     /**
      * @return Organisation to whom the token belongs.
      */
-    operator fun invoke(token: JWT, requiredScope: String) =
-        jwtProcessor.process(token, null)
-            .takeIf { it.hasScope(requiredScope) }
-            ?.orgno
-            ?: throw MissingScopeException(requiredScope)
+    operator fun invoke(token: JWT, requiredScope: String) = process(token, requiredScope).orgno
+
 
     operator fun <T> invoke(
         token: JWT, requiredScope: String,
         organisationValidator: OrganisationValidator<T>,
+        pidValidator: PidValidator<T>,
         o: T
-    ) = this(token, requiredScope).let { orgno ->
-        orgno in permitAll || organisationValidator(orgno, o)
+    ) = process(token, requiredScope).run {
+        ValidationResult(
+            (orgno in permitAll || organisationValidator(orgno, o))
+                    && pidValidator(pid, o),
+            orgno,
+            pid
+        )
     }
 
-    private val JWTClaimsSet.orgno: String?
-        get() = consumer?.get("ID")?.toString()?.substringAfterLast(':')
+    private fun process(token: JWT, requiredScope: String) = jwtProcessor.process(token, null).apply {
+        if (!hasScope(requiredScope)) throw MissingScopeException(requiredScope)
+    }
+
+    private val JWTClaimsSet.orgno: String
+        get() = consumer["ID"]?.toString()?.substringAfterLast(':')
+            ?: throw MalformedConsumerException(consumer.toString())
 
     @Suppress("unused")
     private val JWTClaimsSet.supplier: Map<String, Any>?
         get() = getJSONObjectClaim(SUPPLIER_CLAIM)
 
-    private val JWTClaimsSet.consumer: Map<String, Any>?
+    private val JWTClaimsSet.consumer: Map<String, Any>
         get() = getJSONObjectClaim(CONSUMER_CLAIM)
+
+    private val JWTClaimsSet.pid: String?
+        get() = getStringClaim(PID_CLAIM)
 
     private fun JWTClaimsSet.hasScope(requiredScope: String) = try {
         requiredScope == getStringClaim(SCOPE_CLAIM)
@@ -87,5 +110,6 @@ open class MaskinportenValidator(
         const val SCOPE_CLAIM = "scope"
         const val CONSUMER_CLAIM = "consumer"
         const val SUPPLIER_CLAIM = "supplier"
+        const val PID_CLAIM = "pid"
     }
 }

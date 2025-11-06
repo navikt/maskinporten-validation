@@ -4,9 +4,10 @@ import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
 class ManualValidation(
     val validator: MaskinportenValidator
 ) {
-    private val customValidator = CustomValidator()
+    private val customOrgnoValidator = CustomOrgnoValidator()
+    private val customPidValidator = CustomPidValidator()
 
     fun acceptAnyOrgno(token: JWT) = validator(token, "my:scope/here")
 
-    fun acceptOnlyMyOrgno(token: JWT) = validator(token, "my:scope/here", customValidator, null)
+    fun acceptOnlyMyOrgnoAndPid(token: JWT) = validator(token, "my:scope/here", customOrgnoValidator, customPidValidator, null)
 }

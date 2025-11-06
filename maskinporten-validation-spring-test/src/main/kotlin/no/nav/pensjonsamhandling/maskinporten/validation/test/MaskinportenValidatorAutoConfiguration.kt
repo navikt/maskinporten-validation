@@ -6,6 +6,8 @@ import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.Maskinporte
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorInterceptorConfigurer
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator.NoopOrganisationValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.pid.RequestAwarePidValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.pid.RequestAwarePidValidator.NoopPidValidator
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
@@ -30,10 +32,15 @@ class MaskinportenValidatorAutoConfiguration(
 
     @Bean
     @Primary
+    fun noopPidTestValidator() = NoopPidValidator()
+
+    @Bean
+    @Primary
     fun maskinportenValidatorHandlerTestInterceptor(
         testValidator: List<MaskinportenValidator>,
-        validators: List<RequestAwareOrganisationValidator>
-    ) = MaskinportenValidatorHandlerInterceptor(testValidator, validators)
+        organisationValidators: List<RequestAwareOrganisationValidator>,
+        pidValidators: List<RequestAwarePidValidator>
+    ) = MaskinportenValidatorHandlerInterceptor(testValidator, organisationValidators, pidValidators)
 
     @Bean
     @Primary

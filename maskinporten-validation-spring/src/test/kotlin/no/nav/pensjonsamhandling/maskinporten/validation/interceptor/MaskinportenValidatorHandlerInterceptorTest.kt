@@ -13,11 +13,13 @@ import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.CONSUMER_CLAIM
+import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.PID_CLAIM
 import no.nav.pensjonsamhandling.maskinporten.validation.MaskinportenValidator.Companion.SCOPE_CLAIM
 import no.nav.pensjonsamhandling.maskinporten.validation.config.Environment
 import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenValidatorConfigurer
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorHandlerInterceptorTest.TestConfig
-import no.nav.pensjonsamhandling.maskinporten.validation.orgno.RequestAwareOrganisationValidator.DenyingOrganisationValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.validators.FixedOrgnoValidator
+import no.nav.pensjonsamhandling.maskinporten.validation.validators.FixedPidValidator
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -55,21 +57,38 @@ internal class MaskinportenValidatorHandlerInterceptorTest {
 
     @Test
     fun `Intercepts and rejects valid token with invalid orgno`() {
-        mockMvc.get("/deny") {
-            headers { setBearerAuth(validJws.serialize()) }
+        mockMvc.get("/bogus") {
+            headers { setBearerAuth(wrongOrgnoJws.serialize()) }
         }.andExpect { status { isForbidden() } }
+    }
 
+    @Test
+    fun `Intercepts and rejects valid token with invalid pid`() {
+        mockMvc.get("/bogus") {
+            headers { setBearerAuth(wrongPidJws.serialize()) }
+        }.andExpect { status { isForbidden() } }
+    }
+
+    @Test
+    fun `Intercepts and rejects valid token with missing pid`() {
+        mockMvc.get("/bogus") {
+            headers { setBearerAuth(missingPidJws.serialize()) }
+        }.andExpect { status { isForbidden() } }
     }
 
     @TestConfiguration
     class TestConfig {
         @Bean
-        fun denyingOrganisationValidator() = DenyingOrganisationValidator()
+        fun fixedOrgnoValidator() = FixedOrgnoValidator(VALID_ORGNO)
+        @Bean
+        fun fixedPidValidator() = FixedPidValidator(VALID_PID)
     }
 
     companion object {
         internal const val TEST_SCOPE = "nav:acceptedScope"
         private const val TEST_KEY_ID = "testId"
+        private const val VALID_ORGNO = "12345678"
+        private const val VALID_PID = "12345678910"
         private val jwk: RSAKey = RSAKeyGenerator(2048).keyID(TEST_KEY_ID).generate()
         private val jwks = JWKSet(jwk)
 
@@ -85,7 +104,7 @@ internal class MaskinportenValidatorHandlerInterceptorTest {
             "ID" to "0192:$orgno"
         )
 
-        private val jwtClaimsSet: JWTClaimsSet = JWTClaimsSet.Builder()
+        private fun jwtClaimsSet(orgno: String = VALID_ORGNO, pid: String? = VALID_PID): JWTClaimsSet = JWTClaimsSet.Builder()
             .issuer(Environment.Prod.baseURL.toString())
             .issueTime(Date())
             .expirationTime(Date(System.currentTimeMillis() + 300000L))
@@ -93,10 +112,25 @@ internal class MaskinportenValidatorHandlerInterceptorTest {
             .claim(SCOPE_CLAIM, listOf(TEST_SCOPE))
             .claim("client_id", "bogus")
             .claim("client_amr", "bogus")
-            .claim(CONSUMER_CLAIM, getConsumer("bogus"))
+            .claim(CONSUMER_CLAIM, getConsumer(orgno))
+            .run {
+                if (pid != null) claim(PID_CLAIM, pid) else this
+            }
             .build()
 
-        val validJws = SignedJWT(jwsHeader, jwtClaimsSet).apply {
+        val validJws = SignedJWT(jwsHeader, jwtClaimsSet()).apply {
+            sign(DefaultJWSSignerFactory().createJWSSigner(jwk))
+        }
+
+        val wrongOrgnoJws = SignedJWT(jwsHeader, jwtClaimsSet(orgno = "87654321")).apply {
+            sign(DefaultJWSSignerFactory().createJWSSigner(jwk))
+        }
+
+        val wrongPidJws = SignedJWT(jwsHeader, jwtClaimsSet(pid = "10987654321")).apply {
+            sign(DefaultJWSSignerFactory().createJWSSigner(jwk))
+        }
+
+        val missingPidJws = SignedJWT(jwsHeader, jwtClaimsSet(pid = null)).apply {
             sign(DefaultJWSSignerFactory().createJWSSigner(jwk))
         }
     }
