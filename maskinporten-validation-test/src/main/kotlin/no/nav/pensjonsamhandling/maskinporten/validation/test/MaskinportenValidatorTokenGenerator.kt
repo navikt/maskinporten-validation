@@ -90,7 +90,7 @@ class MaskinportenValidatorTokenGenerator(
         val authorizationDetails = mapOf(
             "from" to from,
             "consented" to ISO8601Utils.format(Date.from(Instant.now())),
-            "to" to mapOf("id" to "0192:$to"),
+            "to" to mapOf("ID" to "0192:$to"),
             "validTo" to ISO8601Utils.format(validTo),
             "consentRights" to listOf(mapOf(
                 "action" to listOf("consent"),
