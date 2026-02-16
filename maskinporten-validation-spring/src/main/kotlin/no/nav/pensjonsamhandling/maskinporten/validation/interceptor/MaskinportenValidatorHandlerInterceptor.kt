@@ -1,5 +1,6 @@
 package no.nav.pensjonsamhandling.maskinporten.validation.interceptor
 
+import com.nimbusds.jose.proc.BadJOSEException
 import com.nimbusds.jwt.JWT
 import com.nimbusds.jwt.JWTParser
 import jakarta.servlet.http.HttpServletRequest
@@ -44,25 +45,30 @@ class MaskinportenValidatorHandlerInterceptor(
         LOG.debug("Received request for: {}", request.requestURI)
         val env = maskinportenValidator.firstOrNull { it.environment.baseURL.toString() == request.bearerToken.jwtClaimsSet.issuer }
             ?: maskinportenValidator.first()
-        env(
-            token = request.bearerToken,
-            requiredScope = scope,
-            requiredConsent = consent.value.takeUnless { it.isBlank() },
-            organisationValidator = organisationValidator,
-            pidValidator = pidValidator,
-            consentValidator = consent.consentValidator,
-            o = request
-        ).apply {
-            if(accepted) {
-                LOG.debug("Accepted.")
-                RequestContextHolder.currentRequestAttributes().apply {
-                    if (pid != null) setAttribute("clientPid", pid!!, SCOPE_REQUEST)
-                    if (consentingPid != null) setAttribute("consentingPid", consentingPid!!, SCOPE_REQUEST)
-                    setAttribute("orgno", orgno, SCOPE_REQUEST)
+        try {
+            env(
+                token = request.bearerToken,
+                requiredScope = scope,
+                requiredConsent = consent.value.takeUnless { it.isBlank() },
+                organisationValidator = organisationValidator,
+                pidValidator = pidValidator,
+                consentValidator = consent.consentValidator,
+                o = request
+            ).apply {
+                if(accepted) {
+                    LOG.debug("Accepted.")
+                    RequestContextHolder.currentRequestAttributes().apply {
+                        if (pid != null) setAttribute("clientPid", pid!!, SCOPE_REQUEST)
+                        if (consentingPid != null) setAttribute("consentingPid", consentingPid!!, SCOPE_REQUEST)
+                        setAttribute("orgno", orgno, SCOPE_REQUEST)
+                    }
                 }
-            }
-            else LOG.debug("Rejected.")
-        }.accepted
+                else LOG.debug("Rejected.")
+            }.accepted
+        } catch (e: BadJOSEException) {
+            LOG.info("Received bad token.", e)
+            false
+        }
     }
     catch (e: MissingScopeException) {
         LOG.debug("Missing required scope.", e)
