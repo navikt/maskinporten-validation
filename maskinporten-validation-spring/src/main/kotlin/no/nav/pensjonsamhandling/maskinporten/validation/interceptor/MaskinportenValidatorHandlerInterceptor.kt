@@ -45,9 +45,10 @@ class MaskinportenValidatorHandlerInterceptor(
         LOG.debug("Received request for: {}", request.requestURI)
         val env = maskinportenValidator.firstOrNull { it.environment.baseURL.toString() == request.bearerToken.jwtClaimsSet.issuer }
             ?: maskinportenValidator.first()
+        val jwt = request.bearerToken
         try {
             env(
-                token = request.bearerToken,
+                token = jwt,
                 requiredScope = scope,
                 requiredConsent = consent.value.takeUnless { it.isBlank() },
                 organisationValidator = organisationValidator,
@@ -66,7 +67,7 @@ class MaskinportenValidatorHandlerInterceptor(
                 else LOG.debug("Rejected.")
             }.accepted
         } catch (e: BadJOSEException) {
-            LOG.info("Received bad token.", e)
+            LOG.warn("Received invalid token with issuer: ${jwt.jwtClaimsSet.issuer}.", e)
             false
         }
     }
