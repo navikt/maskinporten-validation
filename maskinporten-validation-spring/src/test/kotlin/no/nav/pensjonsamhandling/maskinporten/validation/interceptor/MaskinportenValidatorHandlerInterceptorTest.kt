@@ -20,13 +20,16 @@ import no.nav.pensjonsamhandling.maskinporten.validation.config.MaskinportenVali
 import no.nav.pensjonsamhandling.maskinporten.validation.interceptor.MaskinportenValidatorHandlerInterceptorTest.TestConfig
 import no.nav.pensjonsamhandling.maskinporten.validation.validators.FixedOrgnoValidator
 import no.nav.pensjonsamhandling.maskinporten.validation.validators.FixedPidValidator
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.getBeansOfType
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
+import org.springframework.context.ApplicationContext
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -42,6 +45,9 @@ internal class MaskinportenValidatorHandlerInterceptorTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
+
+    @Autowired
+    private lateinit var applicationContext: ApplicationContext
 
     @BeforeAll
     fun init() {
@@ -74,6 +80,11 @@ internal class MaskinportenValidatorHandlerInterceptorTest {
         mockMvc.get("/bogus") {
             headers { setBearerAuth(missingPidJws.serialize()) }
         }.andExpect { status { isForbidden() } }
+    }
+
+    @Test
+    fun `Registers interceptor configurer once`() {
+        assertEquals(1, applicationContext.getBeansOfType<MaskinportenValidatorInterceptorConfigurer>().size)
     }
 
     @TestConfiguration
